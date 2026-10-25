@@ -1,0 +1,11 @@
+meta {
+  name: Get pet by id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/pets/{{petId}}
+  body: none
+  auth: none
+}

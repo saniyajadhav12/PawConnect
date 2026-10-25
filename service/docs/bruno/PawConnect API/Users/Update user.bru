@@ -1,0 +1,26 @@
+meta {
+  name: Update user
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/user/{{userId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Jane Smith",
+    "address": "Cambridge, MA"
+  }
+}
+
+docs {
+  Only the user themselves or an ADMIN. A new `password` is hashed; `role` is ignored.
+}

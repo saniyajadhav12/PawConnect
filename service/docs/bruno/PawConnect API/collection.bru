@@ -1,0 +1,13 @@
+docs {
+  # PawConnect API
+
+  1. Select the **Local** environment (`baseUrl` = http://localhost:3002).
+  2. Run **Users / Register a new user**, then **Users / Login**. Login saves `token` and `userId`,
+     which the other requests use (`Authorization: Bearer {{token}}`).
+  3. Create requests save the new id (`petId`, `productId`, `ngoId`, `fundraiserId`) for the follow-up requests.
+
+  Requests marked ADMIN or NGO need a user with that role. Roles are assigned in MongoDB, e.g.
+  `db.users.updateOne({ email: "jane@example.com" }, { $set: { role: "ADMIN" } })`, then log in again.
+
+  Full reference: service/docs/openapi/*.yml
+}

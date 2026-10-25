@@ -1,0 +1,25 @@
+meta {
+  name: Approve or reject an NGO (ADMIN)
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/ngos/{{ngoId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "status": "approved"
+  }
+}
+
+docs {
+  ADMIN only. `status` is `approved` or `rejected`.
+}

@@ -1,0 +1,35 @@
+meta {
+  name: Add a food product (ADMIN)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/foodProduct
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Raw Blends Dog Food",
+    "brand": "Raw Blends",
+    "price": 29.99,
+    "description": "Grain-free dog food",
+    "nutritionDetails": "Protein: 30%, Fat: 15%"
+  }
+}
+
+script:post-response {
+  if (res.status < 300 && res.body && res.body._id) {
+    bru.setVar("productId", res.body._id);
+  }
+}
+
+docs {
+  ADMIN only.
+}

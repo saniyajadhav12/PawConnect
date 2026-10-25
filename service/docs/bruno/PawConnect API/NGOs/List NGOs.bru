@@ -1,0 +1,19 @@
+meta {
+  name: List NGOs
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/ngos?status=approved
+  body: none
+  auth: none
+}
+
+params:query {
+  status: approved
+}
+
+docs {
+  `status` is optional: pending, approved or rejected.
+}

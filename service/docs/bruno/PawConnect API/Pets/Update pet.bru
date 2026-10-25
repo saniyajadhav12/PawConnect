@@ -1,0 +1,25 @@
+meta {
+  name: Update pet
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/pets/{{petId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "age": 4
+  }
+}
+
+docs {
+  Only the pet's creator or an ADMIN.
+}

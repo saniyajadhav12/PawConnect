@@ -1,0 +1,19 @@
+meta {
+  name: Delete pet
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/pets/{{petId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Only the pet's creator or an ADMIN.
+}

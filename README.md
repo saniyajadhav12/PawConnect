@@ -1,278 +1,181 @@
+# PawConnect
 
+PawConnect is a full-stack pet adoption and care platform. Users can browse adoptable pets, find nearby vets, groomers, pet therapy and animal NGOs on a map, explore pet food, generate a diet plan for their pet, and support animal NGOs through fundraisers. NGOs can register on the platform and an admin approves them.
 
+Built with a React + TypeScript frontend and a Node.js/Express + MongoDB REST API secured with JWT authentication and role-based access control.
 
-## PawConnect(Pet Adoption and Care)
+📄 [Project presentation (PDF)](PawConnect.pdf)
 
-Description-Discover your perfect pet companion with ease! This app offers a rich, tailored browsing experience with filters for pet type, age, and size, along with personalized recommendations based on user preferences. Detailed pet profiles provide insight into each pet's personality, health, and care needs, with interactive maps to locate nearby adoption centers. Users can set reminders for care activities, mark pets of interest, and receive real-time adoption updates.  An engaging community forum, the app is designed to simplify pet adoption while offering valuable resources for pet care and companionship.
+## Features
 
-## Features by Pages
+- **Accounts and authentication**: sign up, log in and log out. JWT-based sessions; view, update or delete your own profile.
+- **Role-based access control**: `USER`, `NGO` and `ADMIN` roles enforced on the API, plus ownership checks (only a pet's or fundraiser's creator, or an admin, can change it).
+- **Pet adoption**: browse pets and filter by type, breed, size and age. Logged-in users can list a pet for adoption.
+- **Nearby pet services**: find veterinarians, pet salons, pet therapy and animal NGOs near you on Google Maps, with one-click directions (Places API (New) text search around your location).
+- **NGO management**: register an NGO; admins approve or reject pending NGOs from the admin dashboard.
+- **Fundraisers**: browse fundraisers; NGO and admin accounts can start a fundraiser for an approved NGO.
+- **Pet food catalog**: browse food products, sort by price and open a product's details page.
+- **Diet generator**: step-by-step form that suggests a meal plan and care tips for your pet.
+- **Pet care tips**: guides on hygiene, food, exercise and safety.
+- **English and French**: switch the interface language from the header.
 
-### 1. **Home Page**
-   - A visually appealing landing page introducing users to the platform's mission and key functionalities.
-   - Navigation to major sections: adoption, nearby services, tips, and more.
+## Tech stack
 
-### 2. **Pet Adoption Page**
-   - Search and filter pets by attributes like type, breed, age, size, and health.
-   - Detailed profiles of pets available for adoption, with options to express interest.
+| Area | Technologies |
+| --- | --- |
+| Frontend | React 18, TypeScript, Vite, Material UI, Redux Toolkit, React Router, i18next, Axios |
+| Maps | Google Maps JavaScript API, Places API (New), `@react-google-maps/api` |
+| Backend | Node.js, Express |
+| Database | MongoDB with Mongoose |
+| Auth | JSON Web Tokens (`jsonwebtoken`), password hashing with `bcrypt` |
+| API docs | OpenAPI 3 specs, Bruno collection |
 
-### 3. **NGO Management Page**
-   - Tools for NGOs to add themselves on the webpage
-   - Approve and Pending status
+## Project structure
 
-### 4. **Nearby NGO and Pet Care Services**
-   - Real-time integration with Google Maps API to locate NGOs, veterinary clinics, and pet care providers.
-   - Displays location-based services for user convenience.
+```text
+PawConnect/
+├── app/                      # Frontend (React + TypeScript + Vite)
+│   ├── src/
+│   │   ├── components/       # Header, Sidebar, NearbyPlacesMap and other shared components
+│   │   ├── config/           # API client (base URL, JWT header, 401 handling) and session helpers
+│   │   ├── pages/            # One component per route
+│   │   ├── redux/            # Redux Toolkit store and slices
+│   │   ├── locales/          # English and French translations
+│   │   ├── styles/           # Page stylesheets
+│   │   └── images/
+│   └── .env.example
+├── service/                  # Backend (Node.js + Express + MongoDB)
+│   ├── server.js             # Entry point: loads env vars, starts the server
+│   ├── service/
+│   │   ├── app.js            # Middleware, database connection, routes
+│   │   ├── routers/          # Route definitions and access rules
+│   │   ├── controllers/      # Request handling
+│   │   ├── services/         # Database access
+│   │   ├── models/           # Mongoose schemas
+│   │   └── middleware/       # JWT authentication and role checks
+│   ├── docs/
+│   │   ├── openapi/          # OpenAPI specs, one per area
+│   │   └── bruno/            # Bruno API collection
+│   └── .env.example
+└── PawConnect.pdf            # Project presentation
+```
 
-### 5. **Pet Food Product Page**
-   - Explore a curated selection of pet food products categorized by pet type and dietary requirements.
-   - Filter options for selecting the best food based on health needs.
+## Getting started
 
-### 6. **Tips Page**
-   - A library of expert articles covering topics like grooming, training, and emergency care.
-   - Seasonal and situation-specific pet care advice for owners.
+### Prerequisites
 
-### 7. **Diet Generator Page**
-   - Generate customized diet plans based on your pet's type, breed, weight, and health conditions.
-   - Provides easy-to-follow nutrition guidelines tailored to each pet.
+- [Node.js](https://nodejs.org/) 18.18 or newer (developed with Node 22)
+- [MongoDB](https://www.mongodb.com/try/download/community), running locally or a MongoDB Atlas connection string
+- Optional: a Google Maps API key for the map pages (see [Google Maps](#google-maps))
 
-## Technology Stack
-- **Frontend**: React, TypeScript, CSS for a responsive and interactive user interface.
-- **State Management**: Redux for managing global state and enabling efficient data flow across components.
-- **Backend**: Node.js, Express.js for API development and business logic.
-- **Database**: MongoDB for managing dynamic data, such as pet profiles and user records.
-- **APIs**: Google Maps API for geolocation services.
-- **Real-Time Communication**: Fugu for implementing chat and communication between users and shelters.
-- **Hosting**: Deployed on a scalable cloud-based platform.
+### 1. Clone and install
 
-## Project Structure
-The project is modularly structured with clear separation of concerns:
-
-- **/frontend**: React components, Redux stores, and stylesheets for the user interface.
-- **/backend**: Node.js API logic, services, and database models.
-- **/assets**: Media files such as images, icons, and logos.
-- **/config**: Environment variable setup and server configurations.
-- **/scripts**: Utility scripts for automation or data setup.
-
-## Dependencies
-The following dependencies are required to run the project:
-
-### Backend
-- `express`: For building the RESTful API.
-- `mongoose`: For connecting and managing the MongoDB database.
-- `dotenv`: For managing environment variables.
-- `cors`: To enable Cross-Origin Resource Sharing.
-- `body-parser`: Middleware for parsing JSON and URL-encoded payloads.
-
-### Frontend
-- `react`: For building the user interface.
-- `react-dom`: Rendering React components.
-- `react-router-dom`: For handling client-side routing.
-- `axios`: For making HTTP requests.
-- `redux`: For state management.
-- `react-redux`: To connect React components with Redux stores.
-- `typescript`: For static type checking in React components.
-
-### Communication
-- `fugu`: For real-time chat and communication between users.
-
-### Development Tools
-- `nodemon`: For live-reloading the backend during development.
-- `webpack`: For bundling frontend assets.
-- `babel`: For transpiling modern JavaScript code.
-
-## How to Run the Project
-
-### 1. Clone the Repository
 ```bash
 git clone <repository-url>
-cd final-project-webarchitects-main
+cd PawConnect
+
+cd service && npm install
+cd ../app && npm install
 ```
 
-### 2. Install Dependencies
-Install the required dependencies for both backend and frontend:
+### 2. Configure environment variables
+
+Each app has a `.env.example`. Copy it to `.env` and fill in the values. The `.env` files are git-ignored.
+
 ```bash
-# Navigate to the backend folder and install dependencies
-cd backend
-npm install
-
-# Navigate to the frontend folder and install dependencies
-cd ../frontend
-npm install
+cp service/.env.example service/.env
+cp app/.env.example app/.env
 ```
 
-### 3. Setup Environment Variables
-Create a `.env` file in the backend folder with the following variables:
-```
-MONGO_CONNECTION=mongodb+srv://<username>:<password>@cluster.mongodb.net/pawconnect
-PORT=3002
-GOOGLE_MAPS_API_KEY=<your-google-maps-api-key>
-FUGU_API_KEY=<your-fugu-api-key>
-```
+**Backend** (`service/.env`)
 
-### 4. Start the Backend Server
+| Variable | Required | Description |
+| --- | --- | --- |
+| `MONGO_CONNECTION` | Yes | MongoDB connection string, e.g. `mongodb://localhost:27017/pawconnect` |
+| `JWT_SECRET` | Yes | Secret used to sign login tokens. Use a long random string, e.g. `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` |
+| `PORT` | No | API port (default `3002`) |
+
+The server refuses to start, with a clear error, if `MONGO_CONNECTION` or `JWT_SECRET` is missing.
+
+**Frontend** (`app/.env`)
+
+| Variable | Required | Description |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | No | Backend URL (default `http://localhost:3002`) |
+| `VITE_GOOGLE_MAPS_API_KEY` | No | Google Maps key for the map pages. Leave empty to run without maps. |
+
+### 3. Run the backend
+
 ```bash
-cd backend
-npm start
+cd service
+npm start        # or: npm run dev  (restarts on file changes)
 ```
 
-### 5. Start the Frontend Development Server
+The API runs on <http://localhost:3002>.
+
+### 4. Run the frontend
+
+In a second terminal:
+
 ```bash
-cd ../frontend
-npm start
+cd app
+npm run dev
 ```
 
-### 6. Open the Application
-Visit `http://localhost:3002` in your web browser to access the platform.
+Open the URL Vite prints (by default <http://localhost:5173>), sign up, and you're logged in.
 
-## Future Enhancements
-- **Mobile Application**: Expand accessibility with native Android and iOS apps.
-- **AI-Powered Pet Matching**: Suggest pets based on user preferences and history.
-- **Advanced Analytics for NGOs**: Provide insights into adoption trends and operational efficiency.
-- **Community Forum**: Create a space for pet owners to share experiences and tips.
+To create a production build, run `npm run build` (output in `app/dist/`) and `npm run preview` to serve it locally.
 
-## Contributors
-- **Team Name**: Web Architects  
-- Dedicated to creating impactful digital solutions for pet welfare.
+### Google Maps
 
-## License
-This project is licensed under the MIT License.  
-Feel free to contribute, fork, or modify the repository for personal and educational use.
+The Vet, Pet Salon, Pet Therapy and NGOs Near Me pages need a Google Maps API key with these APIs enabled in Google Cloud:
 
----
-We hope PawConnect transforms how you connect with pets and supports our shared mission of animal welfare!
+- **Maps JavaScript API**
+- **Places API (New)**
 
+Put the key in `app/.env` as `VITE_GOOGLE_MAPS_API_KEY` and restart `npm run dev`. Without a key, those pages show a "Map unavailable" message and the rest of the app works normally. Because the key is used in the browser, restrict it to your site's domain (HTTP referrer restriction) in Google Cloud.
 
-Object Model:
+### Admin and NGO accounts
 
-# Domain Model for PawConnect
+Every account signs up with the `USER` role; the API ignores any role sent by a client. To try the admin dashboard or create fundraisers, promote an account in MongoDB:
 
-```mermaid
----
-title: PawConnect Model
----
+```bash
+mongosh "mongodb://localhost:27017/pawconnect" --eval \
+  'db.users.updateOne({ email: "you@example.com" }, { $set: { role: "ADMIN" } })'
+```
 
-classDiagram
-    %% User to NGO and Donations
-    User "1" --o "*" OrganizationPost : views
-    User "1" --o "*" NGO : volunteers at
-    User "1" --o "*" Donation : donates to
-    User "1" --o "*" Pet : shows interest in
-    
-    %% NGO and Pets/Posts
-    NGO "1" --o "*" Donation : accepts
-    NGO "1" --o "*" OrganizationPost : creates
+Use `"NGO"` instead of `"ADMIN"` for an NGO account. The new role applies to the next request; no need to log in again.
 
-    %% PetCare Context and Health Details
-    Pet "1" --o "1" PetCare : has
-    PetCare "1" --o "1" Veterinarian : redirects
-    PetCare "1" --o "1" PetSalon : redirects
-    PetCare "1" --o "1" PetTherapy : redirects
-    PetCare "1" --o "1" DietPlan : redirects
-    PetCare "1" --o "*" FoodProduct : redirects
+## API overview
 
-    %% Relationships to NGO and Pets
-    NGO "1" --o "*" Pet : owns
-    
-    %% Diet Plan and Food Products
-    DietPlan "*" --o "*" FoodProduct : contains
+Base URL: `http://localhost:3002`. Protected endpoints expect `Authorization: Bearer <token>`, using the token returned by `POST /user/login`.
 
-    %%Location Usage (Value Object)
-    Veterinarian "1" --o "*" Location : uses
-    PetSalon "1" --o "*" Location : uses
-    PetTherapy "1" --o "*" Location : uses
-    NGO "1" --o "*" Location : uses
-    
-    %% Classes
-    class User {
-        +userId: UUID
-        +name: String
-        +email: String
-        +password: String
-        +location: Location
-    }
+| Area | Endpoints | Access |
+| --- | --- | --- |
+| Users | `POST /user`, `POST /user/login` | Public |
+| | `GET /user/profile` | Logged in |
+| | `GET`, `PUT`, `DELETE /user/:userId` | The user themselves or ADMIN |
+| Pets | `GET /pets`, `GET /pets/:petId` | Public |
+| | `POST /pets` | Logged in |
+| | `PUT`, `DELETE /pets/:petId` | Pet's creator or ADMIN |
+| Food products | `GET /foodProduct`, `GET /foodProduct/:id` | Public |
+| | `POST /foodProduct` | ADMIN |
+| NGOs | `GET /ngos?status=pending\|approved\|rejected` | Public |
+| | `POST /ngos` | Logged in (new NGOs start as `pending`) |
+| | `PATCH /ngos/:id/status` | ADMIN |
+| Fundraisers | `GET /api/fundraisers` | Public |
+| | `POST /api/fundraisers` | NGO or ADMIN, for an approved NGO |
+| | `PATCH`, `DELETE /api/fundraisers/:id` | Fundraiser's creator or ADMIN |
 
-    class Pet {
-        +petId: UUID
-        +type: String
-        +breed: String
-        +age: Int
-        +size: String
-        +disabilityStatus: Boolean
-        +healthConcerns: List<HealthConcern>
-        +profileImage: String
-    }
+Full request and response details:
 
-    class NGO {
-        +ngoId: UUID
-        +name: String
-        +location: Location
-        +contactInfo: String
-        +description: String
-    }
+- **OpenAPI specs**: [`service/docs/openapi/`](service/docs/openapi/): [users](service/docs/openapi/user_management_api.yml), [pets](service/docs/openapi/pet_management_api.yml), [food products](service/docs/openapi/food_product_api.yml), [NGOs](service/docs/openapi/ngo_management_api.yml), [fundraisers](service/docs/openapi/fundraiser_api.yml)
+- **Bruno collection**: open [`service/docs/bruno/PawConnect API`](service/docs/bruno/PawConnect%20API) in [Bruno](https://www.usebruno.com/) and select the `Local` environment. The Login request saves the token for the other requests.
 
-    class OrganizationPost {
-        +postId: UUID
-        +title: String
-        +content: String
-        +date: Date
-        +ngoId: UUID
-    }
+## Team project
 
-    class PetCare {
-        +type: String
-        +frequency: String
-    }
+PawConnect was built as a team project by **Web Architects** at Northeastern University.
 
-    class Veterinarian {
-        +vetId: UUID
-        +name: String
-        +specialization: String
-        +contactInfo: String
-        +location: Location
-    }
+### My contributions
 
-    class PetSalon {
-        +salonId: UUID
-        +name: String
-        +services: List<String>
-        +location: Location
-        +contactInfo: String
-    }
-
-    class PetTherapy {
-        +therapyId: UUID
-        +name: String
-        +type: String
-        +location: Location
-        +contactInfo: String
-    }
-
-    class DietPlan {
-        +dietId: UUID
-        +foodType: String
-        +feedingSchedule: String
-        +allergies: List<String>
-    }
-
-    class Donation {
-        +donationId: UUID
-        +amount: Double
-        +userId: UUID
-        +date: Date
-        +purpose: String
-    }
-
-    class FoodProduct {
-        +productId: UUID
-        +name: String
-        +brand: String
-        +description: String
-        +nutritionDetails: String
-    }
-
-    %% Location as a Value Object
-    class Location {
-        +latitude: Double
-        +longitude: Double
-        +address: String
-    }
+TODO: Saniya to fill in.
