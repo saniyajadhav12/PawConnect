@@ -282,7 +282,9 @@
         "therapyheader": "Thérapie pour Animaux près de chez vous",
         "locationAccessError": "L'accès à la localisation est requis pour afficher les lieux à proximité",
         "fetchError": "Échec de la récupération des lieux à proximité",
-        "navigateButton": "Naviguer"
+        "navigateButton": "Naviguer",
+        "mapUnavailable": "Carte indisponible",
+        "mapUnavailableDetail": "Les lieux à proximité ne peuvent pas être affichés car Google Maps n'est pas configuré."
     },
     "petCare": {
         "title": "Soins pour Animaux",

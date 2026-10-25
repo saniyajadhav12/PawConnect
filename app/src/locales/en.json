@@ -282,7 +282,9 @@
         "therapyheader": "Pet Therapy Near You",
         "locationAccessError": "Location access required for displaying nearby locations",
         "fetchError": "Failed to fetch nearby places",
-        "navigateButton": "Navigate"
+        "navigateButton": "Navigate",
+        "mapUnavailable": "Map unavailable",
+        "mapUnavailableDetail": "Nearby places can't be shown because Google Maps is not configured."
     },
     "petCare": {
         "title": "Pet Care",

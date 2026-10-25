@@ -37,8 +37,12 @@ const placesSlice = createSlice({
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
     },
+    // Clear results when a map page opens, so one page never shows another page's places or error
+    resetPlaces() {
+      return initialState;
+    },
   },
 });
 
-export const { setCurrentPosition, setPlaces, setSelectedPlace, setError } = placesSlice.actions;
+export const { setCurrentPosition, setPlaces, setSelectedPlace, setError, resetPlaces } = placesSlice.actions;
 export default placesSlice.reducer;
