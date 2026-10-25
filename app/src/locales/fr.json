@@ -6,7 +6,8 @@
     "header": {
         "menu": "Menu",
         "title": "Paw Connect",
-        "cart": "Panier"
+        "cart": "Panier",
+        "logout": "Déconnexion"
     },
     "sidebar": {
         "foodProducts": "Produits alimentaires",

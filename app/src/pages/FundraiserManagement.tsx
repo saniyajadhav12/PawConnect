@@ -10,7 +10,8 @@ import {
     Box,
 } from "@mui/material";
 import "../styles/FundraiserManagement.css";
-import axios from "axios";
+import api from "../config/api";
+import { isLoggedIn } from "../config/auth";
 
 interface NGO {
     _id: string;
@@ -51,11 +52,7 @@ const FundraiserManagement: React.FC = () => {
     useEffect(() => {
         const fetchUserRole = async () => {
             try {
-                const res = await axios.get("http://localhost:3002/user/profile", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
+                const res = await api.get("/user/profile");
                 setRole(res.data.role); // Set the role from the user profile
             } catch (err) {
                 console.error("Error fetching user role:", err);
@@ -64,14 +61,7 @@ const FundraiserManagement: React.FC = () => {
 
         const fetchFundraisers = async () => {
             try {
-                const res = await axios.get<Fundraiser[]>(
-                    "http://localhost:3002/api/fundraisers",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        },
-                    }
-                );
+                const res = await api.get<Fundraiser[]>("/api/fundraisers");
                 setFundraisers(res.data);
             } catch (err) {
                 console.error("Error fetching fundraisers:", err);
@@ -80,14 +70,17 @@ const FundraiserManagement: React.FC = () => {
 
         const fetchNGOs = async () => {
             try {
-                const res = await axios.get<NGO[]>("http://localhost:3002/ngos");
-                setNgos(res.data.filter((ngo) => ngo.status === "verified"));
+                const res = await api.get<NGO[]>("/ngos");
+                setNgos(res.data.filter((ngo) => ngo.status === "approved"));
             } catch (err) {
                 console.error("Error fetching NGOs:", err);
             }
         };
 
-        fetchUserRole();
+        // Fundraisers are public; the role (which controls the create form) needs a login
+        if (isLoggedIn()) {
+            fetchUserRole();
+        }
         fetchFundraisers();
         fetchNGOs();
     }, []);
@@ -115,12 +108,8 @@ const FundraiserManagement: React.FC = () => {
             ngo: formData.ngo,
         };
 
-        axios
-            .post("http://localhost:3002/api/fundraisers", newFundraiser, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            })
+        api
+            .post("/api/fundraisers", newFundraiser)
             .then((res) => {
                 setFundraisers([...fundraisers, res.data]);
                 setShowForm(false);

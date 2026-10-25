@@ -65,7 +65,7 @@ const PetSalonPage: React.FC = () => {
     };
 
     service.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
         const fetchedPlaces = results.map((place) => ({
           id: place.place_id!,
           name: place.name!,
@@ -184,7 +184,7 @@ const PetSalonPage: React.FC = () => {
                 display: "flex",
               }}
             >
-              <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+              <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? ""} libraries={["places"]}>
                 <GoogleMap
                   mapContainerStyle={containerStyle}
                   center={currentPosition || defaultCenter}

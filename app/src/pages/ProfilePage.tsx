@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Container, Paper } from '@mui/material';
-import axios from 'axios';
+import api from '../config/api';
+import { clearSession, getUserId } from '../config/auth';
 
 const ProfilePage = () => {
   const [user, setUser] = useState({
-    userId: '123e4567-e89b-12d3-a456-426614174000', // Example user ID
     name: '',
     email: '',
     address: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const userId = getUserId();
 
 
-  // Fetch user profile on component mount
+  // Fetch the logged-in user's profile on component mount
   useEffect(() => {
-    axios.get(`/api/user/${user.userId}`)
+    api.get('/user/profile')
       .then(response => {
-        setUser(response.data);
+        const { name, email, address } = response.data;
+        setUser({ name, email, address: address ?? '' });
       })
       .catch(() => {
         setError('Error fetching user data');
       });
-  }, [user.userId]);
+  }, []);
 
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +53,7 @@ const ProfilePage = () => {
     if (!validateInputs()) return;
 
     setIsLoading(true);
-    axios.put(`http://localhost:3002/user/675118cbc97ec451978b1dca`, {
+    api.put(`/user/${userId}`, {
       name: user.name,
       email: user.email,
       address: user.address,
@@ -68,11 +72,13 @@ const ProfilePage = () => {
   const handleDeleteAccount = () => {
     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       setIsLoading(true);
-      axios.delete(`http://localhost:3002/user/675118cbc97ec451978b1dca`)
+      api.delete(`/user/${userId}`)
         .then(() => {
           setIsLoading(false);
           alert('Account deleted successfully!');
-          // Redirect to login or home page after deletion
+          // The account is gone, so end the session and go to login
+          clearSession();
+          navigate('/login');
         })
         .catch(() => {
           setIsLoading(false);

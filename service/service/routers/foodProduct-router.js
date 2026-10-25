@@ -4,8 +4,9 @@ import { authenticate, authorizeRoles } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// POST route to add a food product (admin only)
+// GET route to list all food products; POST to add one (admin only)
 router.route('/')
+    .get(foodProductController.getAllFoodProducts)
     .post(authenticate, authorizeRoles("ADMIN"), foodProductController.post);
 
 

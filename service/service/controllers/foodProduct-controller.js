@@ -12,7 +12,17 @@ export const post = async (request, response) => {
     }
 }
 
-// GET request - Retrieve a pet profile by ID
+// GET request - Retrieve all food products
+export const getAllFoodProducts = async (request, response) => {
+    try {
+        const foodProducts = await FoodProductService.getAll();
+        setSuccess(foodProducts, response);
+    } catch (error) {
+        setError(error, response);
+    }
+};
+
+// GET request - Retrieve a food product by ID
 export const getFoodProductById = async (request, response) => {
     try {
         const { foodProductId } = request.params; // Get foodProductId from URL parameters

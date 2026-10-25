@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Header from "../components/Header";
 import { Button, TextField, Card, Typography, Grid, Container, Modal, MenuItem } from "@mui/material";
-import axios from "axios";
+import api from "../config/api";
 import "../styles/NgoManagement.css";
 
 
@@ -53,8 +53,8 @@ const NGOManagement: React.FC = () => {
   ];
 
   useEffect(() => {
-    axios
-      .get<NGO[]>("http://localhost:3002/ngos?status=approved")
+    api
+      .get<NGO[]>("/ngos?status=approved")
       .then((res) => {
         setNgos(res.data);
       })
@@ -96,8 +96,8 @@ const NGOManagement: React.FC = () => {
       status: "pending",
     };
 
-    axios
-      .post<NGO>("http://localhost:3002/ngos", newNgo)
+    api
+      .post<NGO>("/ngos", newNgo)
       .then((res) => {
         alert("NGO added successfully!");
         setNgos([...ngos, res.data]);

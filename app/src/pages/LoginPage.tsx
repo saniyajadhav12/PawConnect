@@ -1,9 +1,11 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../config/api';
+import { saveSession } from '../config/auth';
 import Header from '../components/Header';
 import { Box, Button, TextField, Typography, Container } from '@mui/material'; // Importing Material UI components
 import '../styles/LoginPage.css';
+import loginBackground from '../images/login_page_1.jpg';
 
 const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -17,7 +19,8 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3002/user/login', formData);
+      const response = await api.post('/user/login', formData);
+      saveSession(response.data.token, response.data.userId);
       setMessage('Login Successful');
       navigate('/homepage');  // Navigate to the home page after successful login
     } catch (error: any) {
@@ -35,7 +38,7 @@ const LoginPage: React.FC = () => {
       <Box 
         className="login-page" // Apply the background image to the Box component
         sx={{width: "330%", height: "100vh",
-          backgroundImage: 'url(../src/images/login_page_1.jpg)', 
+          backgroundImage: `url(${loginBackground})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

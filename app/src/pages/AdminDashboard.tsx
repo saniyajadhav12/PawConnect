@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../config/api";
 import Header from "../components/Header";
 import {
     Typography,
@@ -29,15 +29,15 @@ const AdminDashboard: React.FC = () => {
     const [ngos, setNgos] = useState<NGO[]>([]);
 
     useEffect(() => {
-        axios
-            .get<NGO[]>("http://localhost:3002/ngos?status=pending")
+        api
+            .get<NGO[]>("/ngos?status=pending")
             .then((res) => setNgos(res.data))
             .catch((err) => console.error("Error fetching NGOs:", err));
     }, []);
 
     const handleApproveNGO = (ngoId: string) => {
-        axios
-            .patch(`http://localhost:3002/ngos/${ngoId}/status`, { status: "approved" })
+        api
+            .patch(`/ngos/${ngoId}/status`, { status: "approved" })
             .then(() => {
                 setNgos(ngos.filter((ngo) => ngo._id !== ngoId));
                 alert("NGO Approved!");
@@ -46,8 +46,8 @@ const AdminDashboard: React.FC = () => {
     };
 
     const handleRejectNGO = (ngoId: string) => {
-        axios
-            .patch(`http://localhost:3002/ngos/${ngoId}/status`, { status: "rejected" })
+        api
+            .patch(`/ngos/${ngoId}/status`, { status: "rejected" })
             .then(() => {
                 setNgos(ngos.filter((ngo) => ngo._id !== ngoId));
                 alert("NGO Rejected!");

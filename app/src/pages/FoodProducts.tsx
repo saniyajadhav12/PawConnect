@@ -9,9 +9,10 @@ import parakreetDogFood from "../images/parakreetDogFood.webp";
 import shebaCatFood from "../images/shebaCatFood.jpeg";
 import yumyumDogFood from "../images/yumyumDogFood.jpeg";
 import Header from "../components/Header";
-import { Button, Typography, Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import { Typography, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import Grid from '@mui/material/Grid'; // Ensure correct path
-import axios from "axios";
+import { Link } from "react-router-dom";
+import api from "../config/api";
 // import AddFoodProduct from "../pages/AddFoodProduct";
 
 
@@ -28,12 +29,11 @@ const FoodProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]); // Stores products fetched from the API
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Stores filtered product list
   const [filter, setFilter] = useState<string>("Product Name"); // Tracks the selected filter
-  const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the visibility of the form
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get<Product[]>("http://localhost:3002/foodProduct/674f808e322f821aaefb0707");
+        const response = await api.get<Product[]>("/foodProduct");
         setProducts(response.data);
         setFilteredProducts(response.data);
       } catch (error) {
@@ -63,11 +63,6 @@ const FoodProducts: React.FC = () => {
     }
 
     setFilteredProducts(sortedProducts);
-  };
-
-  // Toggle form visibility
-  const handleAddProductClick = () => {
-    setShowForm(!showForm); // Toggle the form visibility
   };
 
   return (
@@ -202,18 +197,23 @@ const FoodProducts: React.FC = () => {
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <Grid item xs={12} sm={6} md={4} key={product._id}>
-                  <div className="product-card">
-                    <img
-                      src={product.image || "/images/defaultImage.jpeg"}
-                      alt={product.name}
-                      className="product-image"
-                    />
-                    <div className="product-info">
-                      <Typography variant="h6" className="product-name">
-                        {product.name}
-                      </Typography>
+                  <Link
+                    to={`/productdetails/${product._id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <div className="product-card">
+                      <img
+                        src={product.image || "/images/defaultImage.jpeg"}
+                        alt={product.name}
+                        className="product-image"
+                      />
+                      <div className="product-info">
+                        <Typography variant="h6" className="product-name">
+                          {product.name}
+                        </Typography>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </Grid>
               ))
             ) : (

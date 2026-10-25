@@ -45,7 +45,7 @@ const EnhancedTipsPage: React.FC = () => {
           <div className="tips-right">
             <h2>{t("enhancedTipsPage.sections.hygiene.title")}</h2>
             <ul className="tips-points">
-              {t("enhancedTipsPage.sections.hygiene.points", { returnObjects: true }).map((point: string, index: number) => (
+              {(t("enhancedTipsPage.sections.hygiene.points", { returnObjects: true }) as string[]).map((point: string, index: number) => (
                 <li key={index}>&#8226; {point}</li>
               ))}
             </ul>
@@ -59,7 +59,7 @@ const EnhancedTipsPage: React.FC = () => {
           <div className="tips-left2">
             <h2>{t("enhancedTipsPage.sections.food.title")}</h2>
             <ul className="tips-points2">
-              {t("enhancedTipsPage.sections.food.points", { returnObjects: true }).map((point: string, index: number) => (
+              {(t("enhancedTipsPage.sections.food.points", { returnObjects: true }) as string[]).map((point: string, index: number) => (
                 <li key={index}>&#8226; {point}</li>
               ))}
             </ul>
@@ -79,7 +79,7 @@ const EnhancedTipsPage: React.FC = () => {
           <div className="tips-right">
             <h2>{t("enhancedTipsPage.sections.exercise.title")}</h2>
             <ul className="tips-points">
-              {t("enhancedTipsPage.sections.exercise.points", { returnObjects: true }).map((point: string, index: number) => (
+              {(t("enhancedTipsPage.sections.exercise.points", { returnObjects: true }) as string[]).map((point: string, index: number) => (
                 <li key={index}>&#8226; {point}</li>
               ))}
             </ul>
@@ -93,7 +93,7 @@ const EnhancedTipsPage: React.FC = () => {
           <div className="tips-left2">
             <h2>{t("enhancedTipsPage.sections.safety.title")}</h2>
             <ul className="tips-points2">
-              {t("enhancedTipsPage.sections.safety.points", { returnObjects: true }).map((point: string, index: number) => (
+              {(t("enhancedTipsPage.sections.safety.points", { returnObjects: true }) as string[]).map((point: string, index: number) => (
                 <li key={index}>&#8226; {point}</li>
               ))}
             </ul>

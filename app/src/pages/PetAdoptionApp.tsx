@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import axios from "axios";
+import api from "../config/api";
 import PetCard from "./PetCard";
 import Header from "../components/Header"; // Import the Header component
 import "../styles/Adopt.css";
@@ -60,7 +60,7 @@ const PetAdoptionApp: React.FC = () => {
     useEffect(() => {
         const fetchPets = async () => {
             try {
-                const response = await axios.get<Pet[]>("http://localhost:3002/pets");
+                const response = await api.get<Pet[]>("/pets");
                 setPets(response.data);
                 setFilteredPets(response.data);
             } catch (error) {
@@ -75,13 +75,19 @@ const PetAdoptionApp: React.FC = () => {
     const handleAddPet = async (e: FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post<Pet>("http://localhost:3002/pets", newPet);
+            const response = await api.post<Pet>("/pets", newPet);
             setPets([...pets, response.data]);
             setFilteredPets([...filteredPets, response.data]);
             setShowForm(false);
         } catch (error) {
             console.error("Error adding pet:", (error as Error).message);
         }
+    };
+
+    // There is no online adoption flow, so point the user to the pet's shelter
+    const handleAdopt = (pet: Pet) => {
+        const petLabel = pet.name || `this ${pet.breed}`;
+        alert(`Interested in adopting ${petLabel}? Please contact the shelter: ${pet.shelterLocation}.`);
     };
 
     // Filter pets whenever filters change
@@ -302,7 +308,7 @@ const PetAdoptionApp: React.FC = () => {
                     {/* Pets Grid */}
                     <div className="pets-grid">
                         {filteredPets.map((pet) => (
-                            <PetCard key={pet._id} pet={pet} />
+                            <PetCard key={pet._id} pet={pet} onAdopt={() => handleAdopt(pet)} />
                         ))}
                     </div>
                 </div>

@@ -12,8 +12,11 @@ const BluetoothHandler: React.FC = () => {
         acceptAllDevices: true,
         optionalServices: ['battery_service']
       });
-      setDeviceName(device.name);
+      setDeviceName(device.name ?? '');
 
+      if (!device.gatt) {
+        throw new Error('Device does not support GATT');
+      }
       const server = await device.gatt.connect();
       const service = await server.getPrimaryService('battery_service');
       const characteristic = await service.getCharacteristic('battery_level');

@@ -5,13 +5,30 @@ info:
   description: |
     API for managing food products for pets.
 
-    Reading a product is public. Adding a product requires the `ADMIN` role.
+    Listing and reading products is public. Adding a product requires the `ADMIN` role.
 servers:
   - url: http://localhost:3002
     description: Development server
 
 paths:
   /foodProduct:
+    get:
+      summary: List all food products
+      responses:
+        '200':
+          description: List of food products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FoodProduct'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
     post:
       summary: Add a new food product (admin only)
       security:

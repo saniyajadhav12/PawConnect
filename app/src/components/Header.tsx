@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import Font
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'; // Import specific icon
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import { useTranslation } from 'react-i18next'; // Import useTranslation for translation support
+import { clearSession, isLoggedIn } from '../config/auth';
 
 interface HeaderProps {
   showHamburger?: boolean;
@@ -24,6 +25,11 @@ const Header: React.FC<HeaderProps> = ({ showHamburger = false, showCart = false
 
   const handleCartClick = () => {
     navigate('/cart'); // Navigate to the cart page
+  };
+
+  const handleLogout = () => {
+    clearSession();
+    navigate('/login');
   };
 
   return (
@@ -54,6 +60,11 @@ const Header: React.FC<HeaderProps> = ({ showHamburger = false, showCart = false
           </button>
         )}
         <LanguageSwitcher />
+        {isLoggedIn() && (
+          <button className="logout-button" onClick={handleLogout}>
+            {t('header.logout')}
+          </button>
+        )}
       </header>
 
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

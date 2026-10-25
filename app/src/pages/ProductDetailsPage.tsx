@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // To get the product ID from the URL
 import { Button, Typography, TextField } from "@mui/material";
+import api from "../config/api";
 
 // Define the type for Product
 interface Product {
@@ -17,19 +18,18 @@ const ProductDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();  // Get the product ID from the URL
   const [product, setProduct] = useState<Product | null>(null);  // Store the fetched product details
   const [quantity, setQuantity] = useState<number>(1);  // Store the quantity of the product
+  const [loadFailed, setLoadFailed] = useState<boolean>(false);  // True if the product could not be loaded
 
   // Fetch the product details when the component mounts
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:3002/foodProduct/67548e648ccbf2b252e76c5a `);
-        if (!response.ok) {
-          throw new Error("Failed to fetch product details");
-        }
-        const data: Product = await response.json();
-        setProduct(data);  // Store the product details
+        setLoadFailed(false);
+        const response = await api.get<Product>(`/foodProduct/${id}`);
+        setProduct(response.data);  // Store the product details
       } catch (error) {
         console.error("Error fetching product:", error);
+        setLoadFailed(true);
       }
     };
 
@@ -83,6 +83,8 @@ const ProductDetailsPage: React.FC = () => {
               </div>
             </div>
           </div>
+        ) : loadFailed ? (
+          <Typography>Product not found.</Typography>
         ) : (
           <Typography>Loading product details...</Typography>
         )}

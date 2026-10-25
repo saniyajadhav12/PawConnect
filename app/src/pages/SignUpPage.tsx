@@ -1,8 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Header from "../components/Header";
-import axios from "axios";
+import api from "../config/api";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import "../styles/SignUpPage.css";
+import signUpBackground from "../images/login_page_2.jpg";
 import { useNavigate } from "react-router-dom";
 
 interface FormData {
@@ -29,7 +30,7 @@ const SignUpPage: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3002/user", formData);
+      await api.post("/user", formData);
       // alert("User added successfully!");
       setFormData({
         name: "",
@@ -48,7 +49,7 @@ const SignUpPage: React.FC = () => {
       <Header />
       <Box className="signup-page" // Apply the background image to the Box component
         sx={{width: "300%", height: "100vh",
-          backgroundImage: 'url(../src/images/login_page_2.jpg)', 
+          backgroundImage: `url(${signUpBackground})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

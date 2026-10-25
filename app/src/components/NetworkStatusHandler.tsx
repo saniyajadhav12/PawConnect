@@ -6,8 +6,9 @@ const NetworkStatusHandler: React.FC = () => {
 
   useEffect(() => {
     if ('connection' in navigator) {
-      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      setConnectionType(connection.effectiveType);
+      const connection: NetworkInformation | undefined =
+        navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      setConnectionType(connection?.effectiveType ?? '');
 
       const updateNetworkStatus = () => {
         setIsOnline(navigator.onLine);

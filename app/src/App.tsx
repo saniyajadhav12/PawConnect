@@ -37,7 +37,7 @@ function App() {
           <Route path="/ngo-management" element={<NgoManagement />} /> {/* NGO Management Page */}
           <Route path="/petadopt" element={<PetAdoptionApp />} />
           <Route path="/foodproducts" element={<FoodProducts />} />
-          <Route path="/productdetails" element={<ProductDetailsPage />} />
+          <Route path="/productdetails/:id" element={<ProductDetailsPage />} />
           <Route path='/dietgenerator' element={< DietGenerator />} />
           <Route path='/fundraisermanagement' element={< FundraiserManagement />} />
           <Route path='/admin' element={< AdminDashboard />} />
