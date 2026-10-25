@@ -37,7 +37,7 @@ const SignUpPage: React.FC = () => {
         email: formData.email,
         password: formData.password,
       });
-      saveSession(loginResponse.data.token, loginResponse.data.userId);
+      saveSession(loginResponse.data.token, loginResponse.data.userId, loginResponse.data.user.role);
       // alert("User added successfully!");
       setFormData({
         name: "",

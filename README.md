@@ -149,7 +149,7 @@ mongosh "mongodb://localhost:27017/pawconnect" --eval \
   'db.users.updateOne({ email: "you@example.com" }, { $set: { role: "ADMIN" } })'
 ```
 
-Use `"NGO"` instead of `"ADMIN"` for an NGO account. The new role applies to the next request; no need to log in again.
+Use `"NGO"` instead of `"ADMIN"` for an NGO account. The API applies the new role immediately; log out and back in so the app's pages and menus pick it up too.
 
 ## Testing
 

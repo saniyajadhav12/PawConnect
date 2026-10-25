@@ -125,7 +125,8 @@ const FundraiserManagement: React.FC = () => {
                 <Typography variant="h4" gutterBottom textAlign="center">
                     Fundraiser Management
                 </Typography>
-                {role === "NGO" && (
+                {/* The API lets NGO and ADMIN accounts create fundraisers */}
+                {(role === "NGO" || role === "ADMIN") && (
                     <Button
                         variant="contained"
                         color="primary"

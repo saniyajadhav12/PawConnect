@@ -25,14 +25,14 @@ const PETS = [
     { type: "Rabbit", breed: "Holland Lop", age: 2, size: "Small", disabilityStatus: false, healthConcerns: [], shelterLocation: "Somerville Animal Care" },
 ];
 
-// Same names as the product cards on the Food Products page
+// One product per photo in app/src/config/productImages.ts (matched by name)
 const FOOD_PRODUCTS = [
     { name: "RawBlends Dog Food", brand: "RawBlends", price: 54.99, description: "Grain-free poultry kibble mixed with freeze-dried raw pieces for adult dogs.", nutritionDetails: "Protein 34%, Fat 18%, Fiber 4%, Moisture 10%" },
     { name: "Hills Cat Food", brand: "Hill's Science Diet", price: 42.99, description: "Vet-recommended dry food for adult cats with sensitive stomachs and skin.", nutritionDetails: "Protein 31%, Fat 18%, Fiber 2%, Moisture 8%" },
     { name: "3D Parrot Food", brand: "3D Pet Products", price: 19.99, description: "Seed, fruit and nut blend for parrots, fortified with vitamins and calcium.", nutritionDetails: "Protein 14%, Fat 10%, Fiber 18%, Moisture 12%" },
     { name: "Maxime Dog Food", brand: "Maxime", price: 39.99, description: "Prime dog diet for puppies, with DHA for brain development and probiotics for digestion.", nutritionDetails: "Protein 28%, Fat 17%, Fiber 3%, Moisture 10%" },
     { name: "NoIssue Pet Food", brand: "NoIssue", price: 12.99, description: "100% organic soft-baked dog treats, ideal for training and rewards.", nutritionDetails: "Protein 22%, Fat 9%, Fiber 2%, Moisture 25%" },
-    { name: "Parakreet Dog Food", brand: "Parakreet", price: 14.99, description: "Natural seed and pellet blend for parakeets and budgies, with added vitamins.", nutritionDetails: "Protein 13%, Fat 5%, Fiber 8%, Moisture 12%" },
+    { name: "3D Parakeet Food", brand: "3D Pet Products", price: 14.99, description: "Natural seed and pellet blend for parakeets and budgies, with added vitamins.", nutritionDetails: "Protein 13%, Fat 5%, Fiber 8%, Moisture 12%" },
     { name: "Sheba Cat Food", brand: "Sheba", price: 18.99, description: "Perfect-portion wet pate trays with tuna and whitefish for adult cats.", nutritionDetails: "Protein 10%, Fat 5%, Fiber 1.5%, Moisture 82%" },
     { name: "Yum Yum Dog Food", brand: "Yum Yum", price: 29.99, description: "High-protein, high-energy dry food for active adult dogs.", nutritionDetails: "Protein 30%, Fat 20%, Fiber 3%, Moisture 10%" },
 ];

@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Location } from 'react-router-dom';
 import api from '../config/api';
 import { saveSession } from '../config/auth';
 import Header from '../components/Header';
@@ -11,6 +11,9 @@ const LoginPage: React.FC = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  // Page the user was sent here from (by a route guard or a "log in to ..." button)
+  const from = (location.state as { from?: Location } | null)?.from;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,9 +23,10 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       const response = await api.post('/user/login', formData);
-      saveSession(response.data.token, response.data.userId);
+      saveSession(response.data.token, response.data.userId, response.data.user.role);
       setMessage('Login Successful');
-      navigate('/homepage');  // Navigate to the home page after successful login
+      // Go back to the page that asked for a login, otherwise to the home page
+      navigate(from ? `${from.pathname}${from.search ?? ''}` : '/homepage', { replace: Boolean(from) });
     } catch (error: any) {
       if (error.response) {
         setMessage(error.response.data.message);

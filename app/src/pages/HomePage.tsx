@@ -1,16 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';  // Import i18n for translations
+import { Alert, Snackbar } from "@mui/material";
 import "../styles/HomePage.css";
 import mainPageImage from "../images/sample2.png";
 import donationImg from "../images/yellow_dog2.png";
 import feedbackImg from "../images/pink_dog1.png";
 import contactImg from "../images/yellow_dog4.png";
 import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const HomePage: React.FC = () => {
     const { t } = useTranslation();  // Initialize translation hook
     const [currentIndex, setCurrentIndex] = useState(0);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    // Message from a route guard that sent the user here (e.g. a non-admin opening /admin)
+    const [guardMessageKey] = useState<string | null>(
+        (location.state as { messageKey?: string } | null)?.messageKey ?? null
+    );
+    const [showGuardMessage, setShowGuardMessage] = useState(Boolean(guardMessageKey));
+
+    // Clear the message from history so it doesn't reappear on refresh
+    useEffect(() => {
+        if (guardMessageKey) {
+            navigate(location.pathname, { replace: true, state: null });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const faqs = [
         {
@@ -61,6 +78,19 @@ const HomePage: React.FC = () => {
     return (
         <div className="home-page">
             <Header bgColor="#ffffff" showCart={true} showHamburger={true} />
+            {guardMessageKey && (
+                <Snackbar
+                    open={showGuardMessage}
+                    autoHideDuration={5000}
+                    onClose={() => setShowGuardMessage(false)}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    sx={{ top: { xs: 70 } }}
+                >
+                    <Alert severity="info" onClose={() => setShowGuardMessage(false)}>
+                        {t(guardMessageKey)}
+                    </Alert>
+                </Snackbar>
+            )}
             <main>
                 <section className="main-page">
                     <img

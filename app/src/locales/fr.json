@@ -18,7 +18,11 @@
         "clipboard": "Presse-papiers",
         "file": "Fichier",
         "network": "Réseau",
-        "bluetooth": "Bluetooth"
+        "bluetooth": "Bluetooth",
+        "adminDashboard": "Tableau de bord admin"
+    },
+    "routeGuard": {
+        "adminOnly": "Le tableau de bord est réservé aux administrateurs."
     },
     "profile": {
         "updateProfile": "Mettre à jour le profil",

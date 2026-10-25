@@ -3,7 +3,7 @@ import dParrotFood from "../images/3dParrotFood.jpeg";
 import hillsCatFood from "../images/hillsCatFood.jpeg";
 import maximeDogFood from "../images/maximeDogFood.jpeg";
 import noissueDogTreats from "../images/noissueDogTreats.jpeg";
-import parakreetDogFood from "../images/parakreetDogFood.webp";
+import parakeetFood from "../images/parakreetDogFood.webp";
 import shebaCatFood from "../images/shebaCatFood.jpeg";
 import yumyumDogFood from "../images/yumyumDogFood.jpeg";
 import defaultProductImage from "../images/petdiet.png";
@@ -15,7 +15,7 @@ const productImages: Record<string, string> = {
   "3D Parrot Food": dParrotFood,
   "Maxime Dog Food": maximeDogFood,
   "NoIssue Pet Food": noissueDogTreats,
-  "Parakreet Dog Food": parakreetDogFood,
+  "3D Parakeet Food": parakeetFood,
   "Sheba Cat Food": shebaCatFood,
   "Yum Yum Dog Food": yumyumDogFood,
 };

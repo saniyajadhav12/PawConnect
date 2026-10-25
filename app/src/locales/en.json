@@ -18,7 +18,11 @@
         "clipboard": "Clipboard",
         "file": "File",
         "network": "Network",
-        "bluetooth": "Bluetooth"
+        "bluetooth": "Bluetooth",
+        "adminDashboard": "Admin Dashboard"
+    },
+    "routeGuard": {
+        "adminOnly": "The admin dashboard is only available to admins."
     },
     "profile": {
         "updateProfile": "Update Profile",

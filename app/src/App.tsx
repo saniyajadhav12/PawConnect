@@ -23,6 +23,7 @@ import ClipboardHandler from './components/ClipboardHandler.tsx';
 // import FileHandler from './components/FileHandler.tsx';
 // import NetworkStatusHandler from './components/NetworkStatusHandler.tsx';
 import BluetoothHandler from './components/BluetoothHandler.tsx';
+import RequireAuth from './components/RequireAuth.tsx';
 
 function App() {
   return (
@@ -40,7 +41,7 @@ function App() {
           <Route path="/productdetails/:id" element={<ProductDetailsPage />} />
           <Route path='/dietgenerator' element={< DietGenerator />} />
           <Route path='/fundraisermanagement' element={< FundraiserManagement />} />
-          <Route path='/admin' element={< AdminDashboard />} />
+          <Route path='/admin' element={<RequireAuth roles={["ADMIN"]}><AdminDashboard /></RequireAuth>} />
           <Route path='/petsalon' element={< PetSalonPage />} />
           <Route path='/vet' element={< VetPage />} />
           <Route path='/pettherapy' element={< PetTherapyPage />} />
@@ -48,7 +49,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/petcare" element={<PetCare />} />
           <Route path='/tips' element={<TipsPage/>} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
           <Route path="/geolocation" element={<GeolocationHandler />} />
           <Route path="/clipboard" element={<ClipboardHandler />} />
           {/* <Route path="/file" element={<FileHandler />} /> */}
