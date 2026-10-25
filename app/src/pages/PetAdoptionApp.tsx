@@ -6,7 +6,6 @@ import "../styles/Adopt.css";
 
 type Pet = {
     _id: string;
-    name: string;
     type: string;
     breed: string;
     age: number;
@@ -86,8 +85,7 @@ const PetAdoptionApp: React.FC = () => {
 
     // There is no online adoption flow, so point the user to the pet's shelter
     const handleAdopt = (pet: Pet) => {
-        const petLabel = pet.name || `this ${pet.breed}`;
-        alert(`Interested in adopting ${petLabel}? Please contact the shelter: ${pet.shelterLocation}.`);
+        alert(`Interested in adopting this ${pet.breed}? Please contact the shelter: ${pet.shelterLocation}.`);
     };
 
     // Filter pets whenever filters change

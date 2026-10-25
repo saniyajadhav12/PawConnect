@@ -1,4 +1,4 @@
-/* Main Container */
+/* Main Container (all rules are scoped to this page so shared class names like .product-info and .footer do not affect other pages) */
 .product-details-page {
   font-family: 'Roboto', sans-serif;
   background-color: #f9f9f9;
@@ -6,19 +6,19 @@
 }
 
 /* Header Styling */
-.product-header {
+.product-details-page .product-header {
   text-align: center;
   margin-bottom: 30px;
 }
 
-.product-header h1 {
+.product-details-page .product-header h1 {
   font-size: 2rem;
   font-weight: 500;
   color: #333;
 }
 
 /* Product Details Grid */
-.product-details-grid {
+.product-details-page .product-details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
@@ -26,14 +26,14 @@
   justify-items: center;
 }
 
-.product-image img {
+.product-details-page .product-image img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
 }
 
 /* Product Information */
-.product-info {
+.product-details-page .product-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -43,38 +43,38 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.product-name {
+.product-details-page .product-name {
   font-size: 1.5rem;
   font-weight: 600;
   color: #333;
   margin-bottom: 10px;
 }
 
-.product-brand {
+.product-details-page .product-brand {
   font-size: 1rem;
   color: #777;
   margin-bottom: 20px;
 }
 
-.product-description,
-.product-nutrition {
+.product-details-page .product-description,
+.product-details-page .product-nutrition {
   font-size: 1rem;
   color: #555;
   margin-bottom: 20px;
 }
 
-.product-description {
+.product-details-page .product-description {
   font-style: italic;
 }
 
 /* Product Actions */
-.product-actions {
+.product-details-page .product-actions {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.quantity-btn {
+.product-details-page .quantity-btn {
   padding: 10px 15px;
   font-size: 1.2rem;
   color: #007BFF;
@@ -83,11 +83,11 @@
   cursor: pointer;
 }
 
-.quantity-btn:hover {
+.product-details-page .quantity-btn:hover {
   background-color: #f1f1f1;
 }
 
-.quantity-input {
+.product-details-page .quantity-input {
   width: 60px;
   text-align: center;
   font-size: 1.2rem;
@@ -96,7 +96,7 @@
   margin: 0 10px;
 }
 
-.add-to-cart-btn {
+.product-details-page .add-to-cart-btn {
   background-color: #007BFF;
   color: #fff;
   padding: 12px 20px;
@@ -105,12 +105,12 @@
   cursor: pointer;
 }
 
-.add-to-cart-btn:hover {
+.product-details-page .add-to-cart-btn:hover {
   background-color: #0056b3;
 }
 
 /* Footer */
-.footer {
+.product-details-page .footer {
   text-align: center;
   padding: 20px 0;
   background-color: #f1f1f1;
@@ -118,7 +118,7 @@
   border-top: 1px solid #ddd;
 }
 
-.footer h4 {
+.product-details-page .footer h4 {
   font-size: 1rem;
   color: #333;
   margin: 0;
@@ -126,22 +126,22 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .product-details-grid {
+  .product-details-page .product-details-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .product-info {
+  .product-details-page .product-info {
     text-align: center;
   }
 
-  .quantity-btn,
-  .add-to-cart-btn {
+  .product-details-page .quantity-btn,
+  .product-details-page .add-to-cart-btn {
     font-size: 1.1rem;
     padding: 8px 15px;
   }
 
-  .quantity-input {
+  .product-details-page .quantity-input {
     width: 50px;
     font-size: 1.1rem;
   }

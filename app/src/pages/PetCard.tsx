@@ -1,6 +1,7 @@
+import defaultPetImage from "../images/dummy.jpeg";
+
 type Pet = {
     _id: string;
-    name: string;
     type: string;
     breed: string;
     age: number;
@@ -13,11 +14,14 @@ type PetCardProps = {
 };
 
 const PetCard: React.FC<PetCardProps> = ({ pet, onAdopt }) => {
+    // Pets have no name field, so title them by breed and type
+    const title = `${pet.breed} (${pet.type})`;
+
     return (
         <div className="pet-card">
-            <img src={pet.imageUrl || "/default-image.jpg"} alt={pet.name} className="pet-image" />
+            <img src={pet.imageUrl || defaultPetImage} alt={title} className="pet-image" />
             <div className="pet-info">
-                <h2 className="pet-name">{pet.name}</h2>
+                <h2 className="pet-name">{title}</h2>
                 <p className="pet-details">
                     Type: {pet.type}
                     <br />

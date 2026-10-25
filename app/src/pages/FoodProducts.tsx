@@ -8,6 +8,7 @@ import noissueDogTreats from "../images/noissueDogTreats.jpeg";
 import parakreetDogFood from "../images/parakreetDogFood.webp";
 import shebaCatFood from "../images/shebaCatFood.jpeg";
 import yumyumDogFood from "../images/yumyumDogFood.jpeg";
+import defaultProductImage from "../images/petdiet.png";
 import Header from "../components/Header";
 import { Typography, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import Grid from '@mui/material/Grid'; // Ensure correct path
@@ -21,7 +22,6 @@ interface Product {
   _id: string;
   name: string;
   price: number;
-  sold: number;
   image?: string;
 }
 
@@ -55,9 +55,6 @@ const FoodProducts: React.FC = () => {
       case "Price: High to Low":
         sortedProducts = [...products].sort((a, b) => b.price - a.price);
         break;
-      case "Best Sellers":
-        sortedProducts = [...products].sort((a, b) => b.sold - a.sold);
-        break;
       default:
         sortedProducts = [...products];
     }
@@ -80,9 +77,7 @@ const FoodProducts: React.FC = () => {
             >
               <MenuItem value="Product Name">Product Name</MenuItem>
               <MenuItem value="Price: Low to High">Price: Low to High</MenuItem>
-              <MenuItem value="Price: High to Low">Price: High to Low</MenuItem>
-              <MenuItem value="Best Sellers">Best Sellers</MenuItem>
-            </Select>
+              <MenuItem value="Price: High to Low">Price: High to Low</MenuItem>            </Select>
           </section>
 
           <section className="product-grid">
@@ -203,7 +198,7 @@ const FoodProducts: React.FC = () => {
                   >
                     <div className="product-card">
                       <img
-                        src={product.image || "/images/defaultImage.jpeg"}
+                        src={product.image || defaultProductImage}
                         alt={product.name}
                         className="product-image"
                       />

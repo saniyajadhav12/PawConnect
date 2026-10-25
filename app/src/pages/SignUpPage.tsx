@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import Header from "../components/Header";
 import api from "../config/api";
+import { saveSession } from "../config/auth";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import "../styles/SignUpPage.css";
 import signUpBackground from "../images/login_page_2.jpg";
@@ -31,6 +32,12 @@ const SignUpPage: React.FC = () => {
     e.preventDefault();
     try {
       await api.post("/user", formData);
+      // Log the new user in straight away
+      const loginResponse = await api.post("/user/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+      saveSession(loginResponse.data.token, loginResponse.data.userId);
       // alert("User added successfully!");
       setFormData({
         name: "",

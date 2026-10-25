@@ -26,8 +26,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
           <li><a href="/profile">{t("sidebar.profile")}</a></li>
           <li><a href="/geolocation">{t("sidebar.geolocation")}</a></li>
           <li><a href="/clipboard">{t("sidebar.clipboard")}</a></li>
-          <li><a href="/file">{t("sidebar.file")}</a></li>
-          <li><a href="/network">{t("sidebar.network")}</a></li>
           <li><a href="/bluetooth">{t("sidebar.bluetooth")}</a></li>
         </ul>
       </nav>
