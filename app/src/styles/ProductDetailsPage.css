@@ -1,0 +1,148 @@
+/* Main Container (all rules are scoped to this page so shared class names like .product-info and .footer do not affect other pages) */
+.product-details-page {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+/* Header Styling */
+.product-details-page .product-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.product-details-page .product-header h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Product Details Grid */
+.product-details-page .product-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+  justify-items: center;
+}
+
+.product-details-page .product-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Product Information */
+.product-details-page .product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-details-page .product-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.product-details-page .product-brand {
+  font-size: 1rem;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.product-details-page .product-description,
+.product-details-page .product-nutrition {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.product-details-page .product-description {
+  font-style: italic;
+}
+
+/* Product Actions */
+.product-details-page .product-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.product-details-page .quantity-btn {
+  padding: 10px 15px;
+  font-size: 1.2rem;
+  color: #007BFF;
+  border: 1px solid #007BFF;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-details-page .quantity-btn:hover {
+  background-color: #f1f1f1;
+}
+
+.product-details-page .quantity-input {
+  width: 60px;
+  text-align: center;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 0 10px;
+}
+
+.product-details-page .add-to-cart-btn {
+  background-color: #007BFF;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-details-page .add-to-cart-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Footer */
+.product-details-page .footer {
+  text-align: center;
+  padding: 20px 0;
+  background-color: #f1f1f1;
+  margin-top: 30px;
+  border-top: 1px solid #ddd;
+}
+
+.product-details-page .footer h4 {
+  font-size: 1rem;
+  color: #333;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .product-details-page .product-details-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .product-details-page .product-info {
+    text-align: center;
+  }
+
+  .product-details-page .quantity-btn,
+  .product-details-page .add-to-cart-btn {
+    font-size: 1.1rem;
+    padding: 8px 15px;
+  }
+
+  .product-details-page .quantity-input {
+    width: 50px;
+    font-size: 1.1rem;
+  }
+}

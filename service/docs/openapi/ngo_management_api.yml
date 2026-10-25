@@ -1,0 +1,217 @@
+openapi: 3.0.0
+info:
+  title: PawConnect API - NGO Management
+  version: 1.1.0
+  description: |
+    API for registering NGOs and approving them.
+
+    Any logged-in user can register an NGO; it starts as `pending`.
+    An `ADMIN` approves or rejects it. Only `approved` NGOs can run fundraisers.
+servers:
+  - url: http://localhost:3002
+    description: Development server
+
+paths:
+  /ngos:
+    get:
+      summary: List NGOs
+      parameters:
+        - in: query
+          name: status
+          required: false
+          description: Only return NGOs with this status
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+      responses:
+        '200':
+          description: List of NGOs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NGO'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Register a new NGO
+      description: The new NGO always starts as `pending`; any `status` in the body is ignored.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NGOInput'
+            example:
+              name: "Happy Tails Rescue"
+              registrationId: "NGO-2024-001"
+              location:
+                latitude: 34.0522
+                longitude: -118.2437
+                address: "Los Angeles, CA"
+              contactInfo: "+123456789"
+              description: "Rescuing and rehoming stray animals."
+      responses:
+        '201':
+          description: NGO successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NGO'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /ngos/{id}/status:
+    patch:
+      summary: Approve or reject an NGO (admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "6754a0e1c97ec451978b1d55"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum: [approved, rejected]
+      responses:
+        '200':
+          description: NGO status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NGO'
+        '400':
+          description: Invalid status value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: NGO not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Missing, invalid or expired token, or the user no longer exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: "No token provided"
+    Forbidden:
+      description: Authenticated, but not an admin
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: "You do not have permission to perform this action"
+
+  schemas:
+    NGOInput:
+      type: object
+      required:
+        - name
+        - registrationId
+        - location
+        - contactInfo
+        - description
+      properties:
+        name:
+          type: string
+          example: "Happy Tails Rescue"
+        registrationId:
+          type: string
+          example: "NGO-2024-001"
+        location:
+          $ref: '#/components/schemas/Location'
+        contactInfo:
+          type: string
+          example: "+123456789"
+        description:
+          type: string
+          example: "Rescuing and rehoming stray animals."
+
+    NGO:
+      allOf:
+        - $ref: '#/components/schemas/NGOInput'
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: "6754a0e1c97ec451978b1d55"
+            status:
+              type: string
+              enum: [pending, approved, rejected]
+              example: "pending"
+
+    Location:
+      type: object
+      required:
+        - latitude
+        - longitude
+        - address
+      properties:
+        latitude:
+          type: number
+          example: 34.0522
+        longitude:
+          type: number
+          example: -118.2437
+        address:
+          type: string
+          example: "Los Angeles, CA"
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid status value"

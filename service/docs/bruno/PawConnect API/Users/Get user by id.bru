@@ -1,0 +1,19 @@
+meta {
+  name: Get user by id
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/user/{{userId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Only the user themselves or an ADMIN.
+}

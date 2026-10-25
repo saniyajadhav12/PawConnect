@@ -1,0 +1,29 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/user/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "jane@example.com",
+    "password": "password123"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setVar("token", res.body.token);
+    bru.setVar("userId", res.body.userId);
+  }
+}
+
+docs {
+  Returns a JWT (valid 1 day). Saves `token` and `userId` for the other requests.
+}

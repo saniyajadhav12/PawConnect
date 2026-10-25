@@ -1,0 +1,318 @@
+openapi: 3.0.0
+info:
+  title: PawConnect API - User Management
+  version: 1.1.0
+  description: |
+    API for registering users, logging in and managing user profiles in PawConnect.
+
+    Login returns a JWT. Send it as `Authorization: Bearer <token>` on protected endpoints.
+    Every user signs up with the role `USER`; `NGO` and `ADMIN` roles are assigned directly in the database.
+servers:
+  - url: http://localhost:3002
+    description: Development server
+
+paths:
+  /user:
+    post:
+      summary: Register a new user
+      description: Any `role` in the request body is ignored; new users always get the role `USER`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+            example:
+              name: "John Doe"
+              email: "johndoe@example.com"
+              password: "password123"
+              address: "San Francisco, CA"
+      responses:
+        '200':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: A user with this email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /user/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '200':
+          description: Login successful. The token expires after 1 day.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Login successful"
+                  token:
+                    type: string
+                    description: JWT containing the user id and role
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  userId:
+                    type: string
+                    example: "675118cbc97ec451978b1dca"
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Email or password missing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unknown email or wrong password (same response for both)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: "Invalid email or password"
+
+  /user/profile:
+    get:
+      summary: Retrieve the logged-in user's profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /user/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: string
+          example: "675118cbc97ec451978b1dca"
+    get:
+      summary: Retrieve a user profile
+      description: Only the user themselves or an `ADMIN` may access this.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update a user profile
+      description: |
+        Only the user themselves or an `ADMIN` may update a profile.
+        A new password is hashed before it is stored. Any `role` in the body is ignored.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Jane Doe"
+                email:
+                  type: string
+                  example: "janedoe@example.com"
+                password:
+                  type: string
+                  example: "newpassword456"
+                address:
+                  type: string
+                  example: "Los Angeles, CA"
+      responses:
+        '200':
+          description: User profile successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid user ID or request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete a user profile
+      description: Only the user themselves or an `ADMIN` may delete an account.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User deleted successfully"
+        '400':
+          description: Invalid user ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Missing, invalid or expired token, or the user no longer exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "No token provided"
+    Forbidden:
+      description: Authenticated, but not allowed to access this user
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "You do not have permission to perform this action"
+
+  schemas:
+    UserInput:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "johndoe@example.com"
+        password:
+          type: string
+          minLength: 6
+          example: "password123"
+        address:
+          type: string
+          example: "San Francisco, CA"
+
+    User:
+      type: object
+      description: A user as returned by the API. The password is never included.
+      properties:
+        _id:
+          type: string
+          example: "675118cbc97ec451978b1dca"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "johndoe@example.com"
+        address:
+          type: string
+          example: "San Francisco, CA"
+        role:
+          type: string
+          enum: [USER, NGO, ADMIN]
+          example: "USER"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Invalid request payload"

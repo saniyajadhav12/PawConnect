@@ -1,0 +1,39 @@
+meta {
+  name: Register an NGO
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/ngos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Happy Tails Rescue",
+    "registrationId": "NGO-2024-001",
+    "location": {
+      "latitude": 42.3601,
+      "longitude": -71.0589,
+      "address": "Boston, MA"
+    },
+    "contactInfo": "+16175550100",
+    "description": "Rescuing and rehoming stray animals."
+  }
+}
+
+script:post-response {
+  if (res.status < 300 && res.body && res.body._id) {
+    bru.setVar("ngoId", res.body._id);
+  }
+}
+
+docs {
+  Any logged-in user. New NGOs start as `pending`.
+}

@@ -1,0 +1,25 @@
+meta {
+  name: Update a fundraiser
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/api/fundraisers/{{fundraiserId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "collectedAmount": 250
+  }
+}
+
+docs {
+  Only the creator or an ADMIN.
+}

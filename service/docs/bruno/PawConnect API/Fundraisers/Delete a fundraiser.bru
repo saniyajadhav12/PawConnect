@@ -1,0 +1,19 @@
+meta {
+  name: Delete a fundraiser
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/api/fundraisers/{{fundraiserId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Only the creator or an ADMIN.
+}

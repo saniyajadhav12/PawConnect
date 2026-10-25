@@ -1,0 +1,39 @@
+meta {
+  name: Register a new pet
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/pets
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "type": "Dog",
+    "breed": "Labrador",
+    "age": 3,
+    "size": "Large",
+    "disabilityStatus": false,
+    "healthConcerns": [
+      "Arthritis"
+    ],
+    "shelterLocation": "Boston Animal Shelter"
+  }
+}
+
+script:post-response {
+  if (res.status < 300 && res.body && res.body._id) {
+    bru.setVar("petId", res.body._id);
+  }
+}
+
+docs {
+  Any logged-in user. The pet's `createdBy` is set to the current user.
+}

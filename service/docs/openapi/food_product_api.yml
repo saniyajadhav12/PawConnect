@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: PawConnect API - Food Product Catalog
+  version: 1.1.0
+  description: |
+    API for managing food products for pets.
+
+    Listing and reading products is public. Adding a product requires the `ADMIN` role.
+servers:
+  - url: http://localhost:3002
+    description: Development server
+
+paths:
+  /foodProduct:
+    get:
+      summary: List all food products
+      responses:
+        '200':
+          description: List of food products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FoodProduct'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Add a new food product (admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FoodProductInput'
+            example:
+              name: "Premium Dog Food"
+              brand: "Doggo Foods"
+              price: 3
+              description: "High-quality dog food with essential nutrients"
+              nutritionDetails: "Protein: 25%, Fat: 12%"
+      responses:
+        '200':
+          description: Food product added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodProduct'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing, invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Authenticated, but not an admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /foodProduct/{foodProductId}:
+    get:
+      summary: Retrieve a food product by ID
+      parameters:
+        - in: path
+          name: foodProductId
+          required: true
+          schema:
+            type: string
+            example: "67548e648ccbf2b252e76c5a"
+      responses:
+        '200':
+          description: Food product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodProduct'
+        '400':
+          description: Invalid product ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Food product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    FoodProductInput:
+      type: object
+      required:
+        - name
+        - brand
+        - price
+        - nutritionDetails
+      properties:
+        name:
+          type: string
+          example: "Premium Dog Food"
+        brand:
+          type: string
+          example: "Doggo Foods"
+        price:
+          type: number
+          example: 3
+        description:
+          type: string
+          example: "High-quality dog food with essential nutrients"
+        nutritionDetails:
+          type: string
+          example: "Protein: 25%, Fat: 12%"
+
+    FoodProduct:
+      allOf:
+        - $ref: '#/components/schemas/FoodProductInput'
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: "67548e648ccbf2b252e76c5a"
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Invalid request payload"

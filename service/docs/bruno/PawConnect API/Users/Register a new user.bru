@@ -1,0 +1,24 @@
+meta {
+  name: Register a new user
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "password": "password123",
+    "address": "Boston, MA"
+  }
+}
+
+docs {
+  Creates a user with role USER. Any `role` in the body is ignored.
+}
