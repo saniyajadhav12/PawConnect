@@ -1,5 +1,7 @@
 # PawConnect
 
+[![CI](https://github.com/saniyajadhav12/PawConnect/actions/workflows/ci.yml/badge.svg)](https://github.com/saniyajadhav12/PawConnect/actions/workflows/ci.yml)
+
 PawConnect is a full-stack pet adoption and care platform. Users can browse adoptable pets, find nearby vets, groomers, pet therapy and animal NGOs on a map, explore pet food, generate a diet plan for their pet, and support animal NGOs through fundraisers. NGOs can register on the platform and an admin approves them.
 
 Built with a React + TypeScript frontend and a Node.js/Express + MongoDB REST API secured with JWT authentication and role-based access control.
@@ -29,6 +31,7 @@ Built with a React + TypeScript frontend and a Node.js/Express + MongoDB REST AP
 | Database | MongoDB with Mongoose |
 | Auth | JSON Web Tokens (`jsonwebtoken`), password hashing with `bcrypt` |
 | API docs | OpenAPI 3 specs, Bruno collection |
+| Testing and CI | Jest, Supertest, mongodb-memory-server, GitHub Actions |
 
 ## Project structure
 
@@ -53,10 +56,12 @@ PawConnect/
 │   │   ├── services/         # Database access
 │   │   ├── models/           # Mongoose schemas
 │   │   └── middleware/       # JWT authentication and role checks
+│   ├── tests/                # API tests (Jest + Supertest, in-memory MongoDB)
 │   ├── docs/
 │   │   ├── openapi/          # OpenAPI specs, one per area
 │   │   └── bruno/            # Bruno API collection
 │   └── .env.example
+├── .github/workflows/ci.yml  # CI: backend tests and frontend build
 └── PawConnect.pdf            # Project presentation
 ```
 
@@ -64,7 +69,7 @@ PawConnect/
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 18.18 or newer (developed with Node 22)
+- [Node.js](https://nodejs.org/) 20.19 or newer (developed and tested with Node 22)
 - [MongoDB](https://www.mongodb.com/try/download/community), running locally or a MongoDB Atlas connection string
 - Optional: a Google Maps API key for the map pages (see [Google Maps](#google-maps))
 
@@ -145,6 +150,19 @@ mongosh "mongodb://localhost:27017/pawconnect" --eval \
 ```
 
 Use `"NGO"` instead of `"ADMIN"` for an NGO account. The new role applies to the next request; no need to log in again.
+
+## Testing
+
+The backend has an API test suite built with Jest and Supertest. It covers login and JWT issuing, the uniform 401 for bad credentials, protected routes with and without a token, and users not being able to delete each other's accounts.
+
+```bash
+cd service
+npm test
+```
+
+The tests run against an in-memory MongoDB ([mongodb-memory-server](https://github.com/typegoose/mongodb-memory-server)), so they never touch your database and need no `.env`. The first run downloads a MongoDB binary, which is cached afterwards.
+
+[GitHub Actions](.github/workflows/ci.yml) runs the backend tests and the frontend production build (`npm run build`) on every push and pull request.
 
 ## API overview
 

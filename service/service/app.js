@@ -39,4 +39,12 @@ const initialize = async (app) => {
     });
 };
 
+// Build a fully configured app (connected to MONGO_CONNECTION) without starting a server.
+// server.js adds listen(); tests pass the app straight to supertest.
+export const createApp = async () => {
+    const app = express();
+    await initialize(app);
+    return app;
+};
+
 export default initialize;

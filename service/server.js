@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
-import express from "express";
-import initialize from "./service/app.js";
+import { createApp } from "./service/app.js";
 
 dotenv.config();
 
@@ -15,10 +14,9 @@ if (missingEnvVars.length > 0) {
     process.exit(1);
 }
 
-const app = express();
 const port = process.env.PORT || 3002;
 
-await initialize(app);
+const app = await createApp();
 
 app.listen(port, () => {
     console.log(`Listening to port ${port}`);
