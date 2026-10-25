@@ -192,8 +192,20 @@ Full request and response details:
 
 ## Team project
 
-PawConnect was built as a team project by **Web Architects** at Northeastern University.
+PawConnect started as a team project by **Web Architects** at Northeastern University: Aditi Bailur, Saniya Jadhav, Pratham Rathod and Yashika Lodh.
 
 ### My contributions
 
-TODO: Saniya to fill in.
+**During the team project**
+
+- **Sign-up and login**: the sign-up and login pages and their connection to the user API.
+- **Pet Salons Near You**: the page that finds nearby pet salons on Google Maps, with directions.
+- **NGO management**: the page where NGOs register and approved NGOs are listed.
+
+**After the course**, I continued developing this repository on my own:
+
+- **Security**: JWT authentication, role-based access control (`USER`, `NGO`, `ADMIN`) with ownership checks, password hashing on every update, and no password hashes or stack traces in API responses.
+- **End-to-end fixes**: made the NGO approval workflow, profile management, product details and signup-to-login flows work end to end.
+- **Refactoring**: replaced four near-duplicate map pages (~880 lines) with one shared component and migrated to Google Places API (New).
+- **Frontend**: a shared API client with token handling and logout, and fixed all 19 TypeScript build errors.
+- **Quality**: backend API tests (Jest, Supertest, in-memory MongoDB), GitHub Actions CI, updated OpenAPI specs and Bruno collection, and 0 known dependency vulnerabilities.
