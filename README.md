@@ -12,6 +12,7 @@ Built with a React + TypeScript frontend and a Node.js/Express + MongoDB REST AP
 
 - **Accounts and authentication**: sign up, log in and log out. JWT-based sessions; view, update or delete your own profile.
 - **Role-based access control**: `USER`, `NGO` and `ADMIN` roles enforced on the API, plus ownership checks (only a pet's or fundraiser's creator, or an admin, can change it).
+- **API hardening**: request validation with clear error messages, whitelisted fields on every create and update (clients can't set roles, owners or approval status), rate-limited login and signup, security headers (helmet), a request size limit and configurable CORS.
 - **Pet adoption**: browse pets and filter by type, breed, size and age. Logged-in users can list a pet for adoption.
 - **Nearby pet services**: find veterinarians, pet salons, pet therapy and animal NGOs near you on Google Maps, with one-click directions (Places API (New) text search around your location).
 - **NGO management**: register an NGO; admins approve or reject pending NGOs from the admin dashboard.
@@ -99,6 +100,9 @@ cp app/.env.example app/.env
 | `MONGO_CONNECTION` | Yes | MongoDB connection string, e.g. `mongodb://localhost:27017/pawconnect` |
 | `JWT_SECRET` | Yes | Secret used to sign login tokens. Use a long random string, e.g. `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` |
 | `PORT` | No | API port (default `3002`) |
+| `CORS_ORIGIN` | For deployment | Comma-separated frontend origins allowed to call the API, e.g. `https://pawconnect.example.com`. If unset, all origins are allowed in development and none when `NODE_ENV=production`. |
+| `TRUST_PROXY` | For deployment | Set to `true` behind a hosting proxy or load balancer, so rate limiting sees each client's real IP instead of the proxy's |
+| `NODE_ENV` | For deployment | Set to `production` when deployed (affects the CORS default above, and `npm run seed` refuses to run) |
 
 The server refuses to start, with a clear error, if `MONGO_CONNECTION` or `JWT_SECRET` is missing.
 
@@ -153,7 +157,7 @@ Use `"NGO"` instead of `"ADMIN"` for an NGO account. The API applies the new rol
 
 ## Testing
 
-The backend has an API test suite built with Jest and Supertest. It covers login and JWT issuing, the uniform 401 for bad credentials, protected routes with and without a token, and users not being able to delete each other's accounts.
+The backend has an API test suite built with Jest and Supertest. It covers login and JWT issuing, the uniform 401 for bad credentials, protected routes with and without a token, users not being able to delete each other's accounts, rate limiting, request validation, protected fields on updates, security headers, CORS, and the demo seed script.
 
 ```bash
 cd service
@@ -167,6 +171,8 @@ The tests run against an in-memory MongoDB ([mongodb-memory-server](https://gith
 ## API overview
 
 Base URL: `http://localhost:3002`. Protected endpoints expect `Authorization: Bearer <token>`, using the token returned by `POST /user/login`.
+
+Request bodies are validated: invalid data returns `400` with a `message` and a per-field `errors` list, and fields a route doesn't accept are ignored. `POST /user/login` allows 10 failed attempts and `POST /user` 10 signups per 15 minutes per IP; after that the API returns `429`.
 
 | Area | Endpoints | Access |
 | --- | --- | --- |

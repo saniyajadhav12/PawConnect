@@ -35,17 +35,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
         '400':
-          description: Invalid request payload
+          description: Invalid request payload (see `errors` for each field)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              example:
+                message: "Email must be a valid email address. Password must be at least 6 characters"
+                errors:
+                  - field: email
+                    message: Email must be a valid email address
+                  - field: password
+                    message: Password must be at least 6 characters
         '409':
           description: A user with this email already exists
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
 
   /user/login:
     post:
@@ -100,6 +109,8 @@ paths:
                 $ref: '#/components/schemas/Error'
               example:
                 message: "Invalid email or password"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
 
   /user/profile:
     get:
@@ -260,6 +271,14 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: "You do not have permission to perform this action"
+    TooManyRequests:
+      description: Rate limit reached (10 failed logins or 10 signups per 15 minutes per IP)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "Too many attempts. Please try again in 15 minutes."
 
   schemas:
     UserInput:
@@ -278,9 +297,11 @@ components:
         password:
           type: string
           minLength: 6
+          maxLength: 72
           example: "password123"
         address:
           type: string
+          maxLength: 200
           example: "San Francisco, CA"
 
     User:
@@ -316,3 +337,15 @@ components:
         message:
           type: string
           example: "Invalid request payload"
+        errors:
+          type: array
+          description: Present on validation errors (400), one entry per invalid field
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                example: "email"
+              message:
+                type: string
+                example: "Email must be a valid email address"
