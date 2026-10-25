@@ -12,7 +12,7 @@ const ngoSchema = new mongoose.Schema({
     location: { type: locationSchema, required: true },
     contactInfo: { type: String, required: true },
     description: { type: String, required: true },
-    status: { type: String, enum: ["pending", "verified"], default: "pending" },
+    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
 });
 
 const NGO = mongoose.model("NGO", ngoSchema);

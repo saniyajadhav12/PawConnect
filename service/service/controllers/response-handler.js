@@ -3,7 +3,7 @@ export const setSuccess = (data, response) => {
     response.status(200).json(data);  // Send a successful HTTP response with the data
 };
 
-// Send an error response with status 500 and the error message
+// Send an error response; the full error is logged on the server only
 export const setError = (error, response) => {
     console.error("Error:", error);  // Log the full error to the console for debugging
 
@@ -14,16 +14,13 @@ export const setError = (error, response) => {
     if (error.name === 'ValidationError') {
         statusCode = 400; // Bad request for validation errors
         message = error.message || "Invalid data provided";
-    } else if (error.name === 'MongoError') {
-        statusCode = 500; // Database related error
-        message = "Database error, please try again later";
-    } else if (error.message) {
-        message = error.message; // Use the error message if available
+    } else if (error.name === 'CastError') {
+        statusCode = 400; // Malformed ID or field value
+        message = `Invalid value for ${error.path}`;
+    } else if (error.code === 11000) {
+        statusCode = 409; // Duplicate unique field (e.g. email)
+        message = `A record with this ${Object.keys(error.keyValue || {}).join(", ") || "value"} already exists`;
     }
 
-    // Send back detailed error message and stack if needed
-    response.status(statusCode).json({ 
-        message: message, 
-        stack: error.stack  // Include stack trace for debugging
-    });
+    response.status(statusCode).json({ message });
 };

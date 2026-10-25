@@ -20,7 +20,25 @@ const userSchema = new mongoose.Schema({
         minlength: 6,
         select: false,
     },
+    address: {
+        type: String,
+        trim: true,
+    },
+    // Never set from request bodies; NGO and ADMIN accounts are promoted in the database
+    role: {
+        type: String,
+        enum: ["USER", "NGO", "ADMIN"],
+        default: "USER",
+    },
 }, { timestamps: true });
+
+// Never include the password hash in API responses
+userSchema.set("toJSON", {
+    transform: (doc, ret) => {
+        delete ret.password;
+        return ret;
+    },
+});
 
 // Hash password before saving (Pre-save hook)
 userSchema.pre("save", async function (next) {

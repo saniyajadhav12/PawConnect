@@ -25,4 +25,4 @@ const deleteNGO = async (ngoId) => {
     return await NGO.findByIdAndDelete(ngoId);
 };
 
-export default { createNGO, findNGOById, findAllNGOs, updateNGO, deleteNGO };
+export default { createNGO, findNGOById, findAllNGOs, updateNGOStatus, updateNGO, deleteNGO };

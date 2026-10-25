@@ -1,19 +1,41 @@
 openapi: 3.0.0
 info:
   title: PawConnect API - Pet Management
-  version: 1.0.0
-  description: API for managing pet profiles and details.
+  version: 1.1.0
+  description: |
+    API for managing pet profiles and details.
+
+    Reading pets is public. Creating a pet requires a logged-in user, who becomes its owner (`createdBy`).
+    Only the owner or an `ADMIN` may update or delete a pet.
+servers:
+  - url: http://localhost:3002
+    description: Development server
 
 paths:
   /pets:
+    get:
+      summary: Retrieve all pets
+      responses:
+        '200':
+          description: List of pets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+
     post:
       summary: Register a new pet
+      description: The pet's `createdBy` is set to the logged-in user; any value sent in the body is ignored.
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
+              $ref: '#/components/schemas/PetInput'
             example:
               type: "Dog"
               breed: "Labrador"
@@ -23,7 +45,7 @@ paths:
               healthConcerns: ["Arthritis"]
               shelterLocation: "Boston Animal Shelter"
       responses:
-        '201':
+        '200':
           description: Pet successfully registered
           content:
             application/json:
@@ -35,17 +57,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /pets/{petId}:
+    parameters:
+      - in: path
+        name: petId
+        required: true
+        schema:
+          type: string
+          example: "6754b1f2c97ec451978b1e10"
     get:
       summary: Retrieve pet profile
-      parameters:
-        - in: path
-          name: petId
-          required: true
-          schema:
-            type: string
-            example: "abc123"
       responses:
         '200':
           description: Pet profile retrieved successfully
@@ -53,6 +77,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
+        '400':
+          description: Invalid pet ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: Pet not found
           content:
@@ -62,27 +92,18 @@ paths:
 
     put:
       summary: Update pet profile
-      parameters:
-        - in: path
-          name: petId
-          required: true
-          schema:
-            type: string
-            example: "abc123"
+      description: Only the pet's creator or an `ADMIN` may update it. `createdBy` cannot be changed.
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
+              $ref: '#/components/schemas/PetInput'
             example:
-              type: "Dog"
-              breed: "Golden Retriever"
               age: 4
-              size: "Large"
-              disabilityStatus: false
               healthConcerns: ["Hip Dysplasia"]
-              shelterLocation: "Boston Animal Shelter"
       responses:
         '200':
           description: Pet profile updated successfully
@@ -91,11 +112,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Pet'
         '400':
-          description: Invalid request payload
+          description: Invalid pet ID or request payload
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           description: Pet not found
           content:
@@ -105,13 +130,9 @@ paths:
 
     delete:
       summary: Delete pet profile
-      parameters:
-        - in: path
-          name: petId
-          required: true
-          schema:
-            type: string
-            example: "abc123"
+      description: Only the pet's creator or an `ADMIN` may delete it.
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Pet profile deleted successfully
@@ -123,6 +144,10 @@ paths:
                   message:
                     type: string
                     example: "Pet deleted successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '404':
           description: Pet not found
           content:
@@ -131,8 +156,30 @@ paths:
                 $ref: '#/components/schemas/Error'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Missing, invalid or expired token, or the user no longer exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: "No token provided"
+    Forbidden:
+      description: Authenticated, but not the pet's creator or an admin
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
   schemas:
-    Pet:
+    PetInput:
       type: object
       required:
         - type
@@ -142,9 +189,6 @@ components:
         - disabilityStatus
         - shelterLocation
       properties:
-        petId:
-          type: string
-          example: "abc123"
         type:
           type: string
           example: "Dog"
@@ -169,12 +213,22 @@ components:
           type: string
           example: "Boston Animal Shelter"
 
+    Pet:
+      allOf:
+        - $ref: '#/components/schemas/PetInput'
+        - type: object
+          properties:
+            _id:
+              type: string
+              example: "6754b1f2c97ec451978b1e10"
+            createdBy:
+              type: string
+              description: ID of the user who registered the pet
+              example: "675118cbc97ec451978b1dca"
+
     Error:
       type: object
       properties:
-        code:
-          type: integer
-          example: 400
         message:
           type: string
           example: "Invalid request payload"

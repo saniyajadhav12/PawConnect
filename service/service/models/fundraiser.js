@@ -7,6 +7,7 @@ const fundraiserSchema = new mongoose.Schema(
         targetAmount: { type: Number, required: true },
         collectedAmount: { type: Number, default: 0 },
         ngo: { type: mongoose.Schema.Types.ObjectId, ref: "NGO", required: true },
+        createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     },
     { timestamps: true }
 );

@@ -8,7 +8,7 @@ export const post = async (request, response) => {
     const foodProduct = await FoodProductService.save(newfoodProduct);
     setSuccess(foodProduct, response);
     } catch(error) {
-        setError(response, error);
+        setError(error, response);
     }
 }
 
@@ -24,6 +24,6 @@ export const getFoodProductById = async (request, response) => {
 
         setSuccess(foodProduct, response); // Send success response with the food product details
     } catch (error) {
-        setError(response, error); // Send error response if something goes wrong
+        setError(error, response); // Send error response if something goes wrong
     }
 };

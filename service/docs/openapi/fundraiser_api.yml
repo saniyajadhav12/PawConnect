@@ -1,8 +1,12 @@
 openapi: 3.0.0
 info:
   title: PawConnect API - Fundraiser API
-  description: API for managing fundraisers
-  version: 1.0.0
+  description: |
+    API for managing fundraisers.
+
+    Listing fundraisers is public. Creating one requires the `NGO` or `ADMIN` role and an `approved` NGO.
+    Only the user who created a fundraiser, or an `ADMIN`, may update or delete it.
+  version: 1.1.0
 servers:
   - url: http://localhost:3002/api
     description: Development server
@@ -11,7 +15,7 @@ paths:
   /fundraisers:
     get:
       summary: Get all fundraisers
-      description: Fetch a list of all fundraisers, including their details.
+      description: Fetch a list of all fundraisers, with their NGO details populated.
       responses:
         '200':
           description: A list of fundraisers
@@ -25,7 +29,9 @@ paths:
           description: Server error
     post:
       summary: Create a new fundraiser
-      description: Add a new fundraiser by an NGO.
+      description: Requires the `NGO` or `ADMIN` role. The referenced NGO must be `approved`.
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -41,37 +47,24 @@ paths:
                 $ref: '#/components/schemas/Fundraiser'
         '400':
           description: Invalid input
+        '401':
+          description: Missing, invalid or expired token
+        '403':
+          description: User lacks the NGO/ADMIN role, or the NGO is not approved
 
   /fundraisers/{id}:
-    get:
-      summary: Get a specific fundraiser
-      description: Retrieve the details of a specific fundraiser using its ID.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the fundraiser
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Fundraiser details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Fundraiser'
-        '404':
-          description: Fundraiser not found
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID of the fundraiser
+        schema:
+          type: string
     patch:
       summary: Update a fundraiser
-      description: Update the details of a specific fundraiser.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the fundraiser
-          schema:
-            type: string
+      description: Only the creator or an `ADMIN` may update a fundraiser. `createdBy` cannot be changed.
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -87,25 +80,34 @@ paths:
                 $ref: '#/components/schemas/Fundraiser'
         '400':
           description: Invalid input
+        '401':
+          description: Missing, invalid or expired token
+        '403':
+          description: Not the creator or an admin
         '404':
           description: Fundraiser not found
     delete:
       summary: Delete a fundraiser
-      description: Remove a specific fundraiser using its ID.
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the fundraiser
-          schema:
-            type: string
+      description: Only the creator or an `ADMIN` may delete a fundraiser.
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Fundraiser deleted successfully
+        '401':
+          description: Missing, invalid or expired token
+        '403':
+          description: Not the creator or an admin
         '404':
           description: Fundraiser not found
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     Fundraiser:
       type: object
@@ -125,8 +127,19 @@ components:
           type: number
           description: The amount collected so far
         ngo:
+          description: The NGO associated with the fundraiser (populated object in GET responses)
+          oneOf:
+            - type: string
+            - type: object
+        createdBy:
           type: string
-          description: The ID of the NGO associated with the fundraiser
+          description: ID of the user who created the fundraiser
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     FundraiserInput:
       type: object
       required:
@@ -143,7 +156,7 @@ components:
           type: number
         ngo:
           type: string
-          description: ID of the NGO
+          description: ID of an approved NGO
     FundraiserUpdate:
       type: object
       properties:
@@ -152,4 +165,6 @@ components:
         description:
           type: string
         targetAmount:
+          type: number
+        collectedAmount:
           type: number

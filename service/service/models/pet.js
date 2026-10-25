@@ -8,6 +8,7 @@ const petSchema = new mongoose.Schema({
     disabilityStatus: { type: Boolean, required: true },
     healthConcerns: [{ type: String }],
     shelterLocation: { type: String, required: true },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const Pet = mongoose.model("Pet", petSchema);

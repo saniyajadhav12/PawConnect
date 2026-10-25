@@ -1,36 +1,25 @@
 import dotenv from "dotenv";
 import express from "express";
-import mongoose from "mongoose";
-import cors from "cors"; // Import CORS middleware
-import petRouter from "./service/routers/pet-router.js"; // Import the pet router
 import initialize from "./service/app.js";
-import fundraiserRouter from "./service/routers/fundraiser-router.js";
 
 dotenv.config();
 
+// Fail fast if required configuration is missing
+const requiredEnvVars = ["MONGO_CONNECTION", "JWT_SECRET"];
+const missingEnvVars = requiredEnvVars.filter((name) => !process.env[name]);
+if (missingEnvVars.length > 0) {
+    console.error(
+        `Missing required environment variable(s): ${missingEnvVars.join(", ")}. ` +
+        "Copy service/.env.example to service/.env and fill in the values."
+    );
+    process.exit(1);
+}
+
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3002;
 
-// MongoDB Connection
-mongoose
-    .connect(process.env.MONGO_CONNECTION, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
-    .then(() => console.log("Connected to MongoDB"))
-    .catch((error) => console.error("MongoDB connection error:", error));
+await initialize(app);
 
-// Middleware
-app.use(cors()); // Add CORS middleware here
-app.use(express.json()); // Add JSON body parser
-app.use("/pets", petRouter); // Use pet routes
-app.use("/api/fundraisers", fundraiserRouter);
-
-
-// Initialize other services (if any)
-initialize(app);
-
-// Start the server
 app.listen(port, () => {
     console.log(`Listening to port ${port}`);
 });
