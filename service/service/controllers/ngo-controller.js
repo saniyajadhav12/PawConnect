@@ -2,9 +2,9 @@ import ngoService from "../services/ngo-service.js";
 
 export const registerNGO = async (req, res) => {
     try {
-        // Status is set by an admin, never by the registering user
-        const { status, ...ngoData } = req.body ?? {};
-        const ngo = await ngoService.createNGO(ngoData);
+        // Status is set by an admin, never by the registering user; createdBy comes from the token
+        const { status, createdBy, ...ngoData } = req.body ?? {};
+        const ngo = await ngoService.createNGO({ ...ngoData, createdBy: req.user._id });
         res.status(201).json(ngo);
     } catch (err) {
         console.error("Error registering NGO:", err.message);

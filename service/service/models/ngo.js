@@ -13,6 +13,7 @@ const ngoSchema = new mongoose.Schema({
     contactInfo: { type: String, required: true },
     description: { type: String, required: true },
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const NGO = mongoose.model("NGO", ngoSchema);

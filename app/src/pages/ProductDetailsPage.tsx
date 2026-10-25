@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"; // To get the product ID from the 
 import { Button, Typography, TextField } from "@mui/material";
 import api from "../config/api";
 import "../styles/ProductDetailsPage.css";
-import defaultProductImage from "../images/petdiet.png";
+import { getProductImage } from "../config/productImages";
 
 // Define the type for Product
 interface Product {
@@ -53,7 +53,7 @@ const ProductDetailsPage: React.FC = () => {
             {/* Product Image */}
             <div className="product-image">
               <img
-                src={product.image || defaultProductImage}
+                src={getProductImage(product)}
                 alt={product.name}
                 className="product-image"
               />

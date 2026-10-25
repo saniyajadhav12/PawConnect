@@ -141,6 +141,10 @@ components:
             _id:
               type: string
               example: "67548e648ccbf2b252e76c5a"
+            createdBy:
+              type: string
+              description: ID of the admin who added the product (set from the token)
+              example: "675118cbc97ec451978b1dca"
 
     Error:
       type: object

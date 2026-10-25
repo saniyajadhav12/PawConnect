@@ -185,6 +185,10 @@ components:
               type: string
               enum: [pending, approved, rejected]
               example: "pending"
+            createdBy:
+              type: string
+              description: ID of the user who registered the NGO (set from the token)
+              example: "675118cbc97ec451978b1dca"
 
     Location:
       type: object
