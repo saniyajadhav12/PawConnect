@@ -181,7 +181,7 @@ const VetPage: React.FC = () => {
                 display: "flex",
               }}
             >
-              <LoadScript googleMapsApiKey="AIzaSyCrPmk62ARLAKvy25SSmK54qOHSr5aQofo" libraries={["places"]}>
+              <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
                 <GoogleMap
                   mapContainerStyle={containerStyle}
                   center={currentPosition || defaultCenter}
