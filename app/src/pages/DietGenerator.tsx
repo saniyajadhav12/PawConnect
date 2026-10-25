@@ -222,10 +222,12 @@ const DietGenerator: React.FC = () => {
 
           <div className="form-navigation">
             {currentStep > 0 && !isSubmitted && <button type="button" onClick={handleBack}>{t('dietGenerator.back')}</button>}
+            {/* Separate keys so React renders a new button instead of turning the clicked "Next"
+                into a submit button mid-click, which submitted the form and skipped the last step */}
             {currentStep < steps.length - 1 && !isSubmitted ? (
-              <button type="button" onClick={handleNext}>{t('dietGenerator.next')}</button>
+              <button key="next" type="button" onClick={handleNext}>{t('dietGenerator.next')}</button>
             ) : !isSubmitted ? (
-              <button type="submit">{t('dietGenerator.submit')}</button>
+              <button key="submit" type="submit">{t('dietGenerator.submit')}</button>
             ) : null}
           </div>
         </form>

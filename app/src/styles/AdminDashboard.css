@@ -45,7 +45,7 @@
   
   .ngo-card {
     background-color: #ffffff;
-    height: 300px;
+    min-height: 300px; /* grow with the content so the details and buttons are never cut off */
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
