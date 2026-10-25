@@ -115,6 +115,7 @@ web_modules/
 .env.test.local
 .env.production.local
 .env.local
+!.env.example
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -127,7 +128,10 @@ out
 # Nuxt.js build / generate output
 .nuxt
 # used for dist folder
-dist  
+dist/
+
+# Vite cache
+.vite/
 
 # Gatsby files
 .cache/
