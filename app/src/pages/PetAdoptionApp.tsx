@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import api from "../config/api";
+import { isLoggedIn } from "../config/auth";
 import PetCard from "./PetCard";
 import Header from "../components/Header"; // Import the Header component
 import "../styles/Adopt.css";
@@ -204,9 +205,12 @@ const PetAdoptionApp: React.FC = () => {
                 {/* Main Content */}
                 <div className="main-content">
                     <h1 className="page-title">Pet Adoption Center</h1>
-                    <button className="add-pet-button" onClick={() => setShowForm(true)}>
-                        Add Pet
-                    </button>
+                    {/* Listing a pet needs an account */}
+                    {isLoggedIn() && (
+                        <button className="add-pet-button" onClick={() => setShowForm(true)}>
+                            Add Pet
+                        </button>
+                    )}
 
                     {showForm && (
                         <div className="add-pet-form">

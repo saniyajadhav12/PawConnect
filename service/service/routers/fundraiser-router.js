@@ -6,6 +6,8 @@ import {
     deleteFundraiser,
 } from "../controllers/fundraiser-controller.js";
 import { authenticate, authorizeRoles } from "../middleware/auth.js";
+import { validateBody } from "../middleware/validate.js";
+import { fundraiserSchema, fundraiserUpdateSchema } from "../validation/schemas.js";
 
 const router = express.Router();
 
@@ -14,6 +16,7 @@ router.post(
     "/",
     authenticate,
     authorizeRoles("NGO", "ADMIN"),
+    validateBody(fundraiserSchema),
     createFundraiser
 );
 
@@ -25,6 +28,7 @@ router.patch(
     "/:id",
     authenticate,
     authorizeRoles("NGO", "ADMIN"),
+    validateBody(fundraiserUpdateSchema),
     updateFundraiser
 );
 

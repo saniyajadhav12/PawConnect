@@ -18,7 +18,8 @@ beforeAll(async () => {
     mongo = await MongoMemoryServer.create();
     process.env.MONGO_CONNECTION = mongo.getUri("pawconnect-test");
     process.env.JWT_SECRET = JWT_SECRET;
-    app = await createApp();
+    // High auth rate limit so these tests never hit it (security.test.js covers the 429)
+    app = await createApp({ authRateLimit: { limit: 1000 } });
 }, SETUP_TIMEOUT_MS);
 
 afterEach(async () => {

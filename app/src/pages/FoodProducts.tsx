@@ -1,19 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../styles/FoodProducts.css";
-import rawblendsDogFood from "../images/rawblendsDogFood.jpeg";
-import dParrotFood from "../images/3dParrotFood.jpeg";
-import hillsCatFood from "../images/hillsCatFood.jpeg";
-import maximeDogFood from "../images/maximeDogFood.jpeg";
-import noissueDogTreats from "../images/noissueDogTreats.jpeg";
-import parakreetDogFood from "../images/parakreetDogFood.webp";
-import shebaCatFood from "../images/shebaCatFood.jpeg";
-import yumyumDogFood from "../images/yumyumDogFood.jpeg";
-import defaultProductImage from "../images/petdiet.png";
 import Header from "../components/Header";
 import { Typography, Select, MenuItem, SelectChangeEvent } from "@mui/material";
-import Grid from '@mui/material/Grid'; // Ensure correct path
 import { Link } from "react-router-dom";
 import api from "../config/api";
+import { getProductImage } from "../config/productImages";
 // import AddFoodProduct from "../pages/AddFoodProduct";
 
 
@@ -77,144 +68,32 @@ const FoodProducts: React.FC = () => {
             >
               <MenuItem value="Product Name">Product Name</MenuItem>
               <MenuItem value="Price: Low to High">Price: Low to High</MenuItem>
-              <MenuItem value="Price: High to Low">Price: High to Low</MenuItem>            </Select>
+              <MenuItem value="Price: High to Low">Price: High to Low</MenuItem>
+            </Select>
           </section>
 
           <section className="product-grid">
-            <div className="product-card">
-              <img
-                src={rawblendsDogFood}
-                alt="RawBlends Dog Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                  RawBlends Dog Food
-                </Typography>
-              
-              </div>
-            </div>
-
-            <div className="product-card">
-              <img
-                src={hillsCatFood}
-                alt="Hills Cat Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                  Hills Cat Food
-                </Typography>
-                <div className="amount"></div>
-              </div>
-            </div>
-
-            <div className="product-card">
-              <img
-                src={dParrotFood}
-                alt="3D Parrot Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                  3D Parrot Food
-                </Typography>
-              </div>
-            </div>
-
-            <div className="product-card">
-              <img
-                src={maximeDogFood}
-                alt="Maxime Dog Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                  Maxime Dog Food
-                </Typography>
-              </div>
-            </div>
-
-            <div className="product-card">
-              <img
-                src={noissueDogTreats}
-                alt="NoIssue Pet Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                  NoIssue Pet Food
-                </Typography>
-              </div>
-            </div>
-
-            <div className="product-card">
-              <img
-                src={parakreetDogFood}
-                alt="Parakreet Dog Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                Parakreet Dog Food
-                </Typography>
-              </div>
-            </div>
-
-            <div className="product-card">
-              <img
-                src={shebaCatFood}
-                alt="Sheba Cat Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                Sheba Cat Food
-                </Typography>
-              </div>
-            </div>
-
-            <div className="product-card">
-              <img
-                src={yumyumDogFood}
-                alt="Yum Yum Dog Food"
-                className="product-image"
-              />
-              <div className="product-info">
-                <Typography variant="h6" className="product-name">
-                Yum Yum Dog Food
-                </Typography>
-              </div>
-            </div>
+            {filteredProducts.map((product) => (
+              <Link
+                key={product._id}
+                to={`/productdetails/${product._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <div className="product-card">
+                  <img
+                    src={getProductImage(product)}
+                    alt={product.name}
+                    className="product-image"
+                  />
+                  <div className="product-info">
+                    <Typography variant="h6" className="product-name">
+                      {product.name}
+                    </Typography>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </section>
-
-          <Grid container spacing={3} className="product-grid">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <Grid item xs={12} sm={6} md={4} key={product._id}>
-                  <Link
-                    to={`/productdetails/${product._id}`}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <div className="product-card">
-                      <img
-                        src={product.image || defaultProductImage}
-                        alt={product.name}
-                        className="product-image"
-                      />
-                      <div className="product-info">
-                        <Typography variant="h6" className="product-name">
-                          {product.name}
-                        </Typography>
-                      </div>
-                    </div>
-                  </Link>
-                </Grid>
-              ))
-            ) : (
-              <Typography variant="body1"></Typography>
-            )}
-          </Grid>
         </main>
 
         <footer className="footer">

@@ -4,7 +4,7 @@ import { setSuccess, setError } from "./response-handler.js"; // Import response
 
 export const post = async (request, response) => {
     try{
-    const newfoodProduct = {...request.body};
+    const newfoodProduct = { ...request.body, createdBy: request.user._id };
     const foodProduct = await FoodProductService.save(newfoodProduct);
     setSuccess(foodProduct, response);
     } catch(error) {

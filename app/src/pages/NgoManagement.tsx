@@ -1,7 +1,9 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import Header from "../components/Header";
 import { Button, TextField, Card, Typography, Grid, Container, Modal, MenuItem } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../config/api";
+import { isLoggedIn } from "../config/auth";
 import "../styles/NgoManagement.css";
 
 
@@ -32,6 +34,8 @@ interface FormData {
 }
 
 const NGOManagement: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showForm, setShowForm] = useState(false);
   const [ngos, setNgos] = useState<NGO[]>([]);
   const [formData, setFormData] = useState<FormData>({
@@ -146,9 +150,22 @@ const NGOManagement: React.FC = () => {
         <Typography variant="h4" gutterBottom className="title">
           NGO Management
         </Typography>
-        <div className="ngo-button"><Button variant="contained" onClick={() => setShowForm(true)} className="add-ngo-button">
-          Add NGO
-        </Button></div>
+        <div className="ngo-button">
+          {isLoggedIn() ? (
+            <Button variant="contained" onClick={() => setShowForm(true)} className="add-ngo-button">
+              Add NGO
+            </Button>
+          ) : (
+            // Registering an NGO needs an account; come back here after logging in
+            <Button
+              variant="contained"
+              onClick={() => navigate("/login", { state: { from: location } })}
+              className="add-ngo-button"
+            >
+              Log in to register your NGO
+            </Button>
+          )}
+        </div>
         <Modal open={showForm} onClose={() => setShowForm(false)} className="modal" >
           <Container component="form" onSubmit={handleFormSubmit} className="ngo-form">
             <Typography variant="h5" gutterBottom>

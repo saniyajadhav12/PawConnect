@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next'; // Import the hook for translations
 import '../styles/Sidebar.css';
+import { hasRole } from '../config/auth';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
           <li><a href="/geolocation">{t("sidebar.geolocation")}</a></li>
           <li><a href="/clipboard">{t("sidebar.clipboard")}</a></li>
           <li><a href="/bluetooth">{t("sidebar.bluetooth")}</a></li>
+          {hasRole("ADMIN") && <li><a href="/admin">{t("sidebar.adminDashboard")}</a></li>}
         </ul>
       </nav>
     </aside>

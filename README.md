@@ -8,10 +8,34 @@ Built with a React + TypeScript frontend and a Node.js/Express + MongoDB REST AP
 
 📄 [Project presentation (PDF)](PawConnect.pdf)
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/home.jpg" alt="Home page"><br><sub>Home page</sub></td>
+    <td align="center"><img src="docs/screenshots/pet-adoption.jpg" alt="Pet adoption page with filters and pet cards"><br><sub>Pet adoption with filters</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/food-products.jpg" alt="Food products catalog"><br><sub>Food products catalog</sub></td>
+    <td align="center"><img src="docs/screenshots/diet-generator.jpg" alt="Generated diet plan"><br><sub>Diet generator result</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/pet-salons-map.jpg" alt="Pet salons near you on Google Maps"><br><sub>Pet salons near you (Google Maps; image from the project presentation)</sub></td>
+    <td align="center"><img src="docs/screenshots/admin-dashboard.jpg" alt="Admin dashboard with a pending NGO"><br><sub>Admin dashboard: approve or reject NGOs</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/login.jpg" alt="Login page"><br><sub>Login</sub></td>
+    <td></td>
+  </tr>
+</table>
+
+Screenshots use the [demo data](#demo-accounts) from `npm run seed`.
+
 ## Features
 
 - **Accounts and authentication**: sign up, log in and log out. JWT-based sessions; view, update or delete your own profile.
 - **Role-based access control**: `USER`, `NGO` and `ADMIN` roles enforced on the API, plus ownership checks (only a pet's or fundraiser's creator, or an admin, can change it).
+- **API hardening**: request validation with clear error messages, whitelisted fields on every create and update (clients can't set roles, owners or approval status), rate-limited login and signup, security headers (helmet), a request size limit and configurable CORS.
 - **Pet adoption**: browse pets and filter by type, breed, size and age. Logged-in users can list a pet for adoption.
 - **Nearby pet services**: find veterinarians, pet salons, pet therapy and animal NGOs near you on Google Maps, with one-click directions (Places API (New) text search around your location).
 - **NGO management**: register an NGO; admins approve or reject pending NGOs from the admin dashboard.
@@ -49,6 +73,7 @@ PawConnect/
 │   └── .env.example
 ├── service/                  # Backend (Node.js + Express + MongoDB)
 │   ├── server.js             # Entry point: loads env vars, starts the server
+│   ├── scripts/              # npm run seed: demo accounts and data
 │   ├── service/
 │   │   ├── app.js            # Middleware, database connection, routes
 │   │   ├── routers/          # Route definitions and access rules
@@ -61,6 +86,7 @@ PawConnect/
 │   │   ├── openapi/          # OpenAPI specs, one per area
 │   │   └── bruno/            # Bruno API collection
 │   └── .env.example
+├── docs/screenshots/         # Screenshots used in this README
 ├── .github/workflows/ci.yml  # CI: backend tests and frontend build
 └── PawConnect.pdf            # Project presentation
 ```
@@ -99,6 +125,9 @@ cp app/.env.example app/.env
 | `MONGO_CONNECTION` | Yes | MongoDB connection string, e.g. `mongodb://localhost:27017/pawconnect` |
 | `JWT_SECRET` | Yes | Secret used to sign login tokens. Use a long random string, e.g. `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"` |
 | `PORT` | No | API port (default `3002`) |
+| `CORS_ORIGIN` | For deployment | Comma-separated frontend origins allowed to call the API, e.g. `https://pawconnect.example.com`. If unset, all origins are allowed in development and none when `NODE_ENV=production`. |
+| `TRUST_PROXY` | For deployment | Set to `true` behind a hosting proxy or load balancer, so rate limiting sees each client's real IP instead of the proxy's |
+| `NODE_ENV` | For deployment | Set to `production` when deployed (affects the CORS default above, and `npm run seed` refuses to run) |
 
 The server refuses to start, with a clear error, if `MONGO_CONNECTION` or `JWT_SECRET` is missing.
 
@@ -131,6 +160,27 @@ Open the URL Vite prints (by default <http://localhost:5173>), sign up, and you'
 
 To create a production build, run `npm run build` (output in `app/dist/`) and `npm run preview` to serve it locally.
 
+### Demo accounts
+
+To try every feature right away, load the demo data into the database configured in `service/.env`:
+
+```bash
+cd service
+npm run seed
+```
+
+This creates three accounts, 8 adoptable pets, the 8 food products from the catalog, 3 NGOs (two approved, one pending for the admin to review) and 2 fundraisers. All accounts use the password `PawConnect123`:
+
+| Role | Email | Try |
+| --- | --- | --- |
+| USER | `user@pawconnect.demo` | Browse and list pets, edit your profile, register an NGO |
+| NGO | `ngo@pawconnect.demo` | Create and manage fundraisers for *Paws & Whiskers Rescue* |
+| ADMIN | `admin@pawconnect.demo` | Approve or reject *Second Chance Shelter* on the admin dashboard (sidebar → Admin Dashboard) |
+
+Running `npm run seed` again resets the demo data: it replaces only the records owned by the `@pawconnect.demo` accounts and never touches other data.
+
+> **Note:** the demo accounts, including an admin, share a published password. Don't seed a public deployment unless you want visitors to have these accounts. `npm run seed` refuses to run when `NODE_ENV=production` unless `ALLOW_DEMO_SEED=true` is set.
+
 ### Google Maps
 
 The Vet, Pet Salon, Pet Therapy and NGOs Near Me pages need a Google Maps API key with these APIs enabled in Google Cloud:
@@ -142,18 +192,18 @@ Put the key in `app/.env` as `VITE_GOOGLE_MAPS_API_KEY` and restart `npm run dev
 
 ### Admin and NGO accounts
 
-Every account signs up with the `USER` role; the API ignores any role sent by a client. To try the admin dashboard or create fundraisers, promote an account in MongoDB:
+Every account signs up with the `USER` role; the API ignores any role sent by a client. The [demo accounts](#demo-accounts) already include an NGO and an admin. To make one of your own accounts an admin or NGO, promote it in MongoDB:
 
 ```bash
 mongosh "mongodb://localhost:27017/pawconnect" --eval \
   'db.users.updateOne({ email: "you@example.com" }, { $set: { role: "ADMIN" } })'
 ```
 
-Use `"NGO"` instead of `"ADMIN"` for an NGO account. The new role applies to the next request; no need to log in again.
+Use `"NGO"` instead of `"ADMIN"` for an NGO account. The API applies the new role immediately; log out and back in so the app's pages and menus pick it up too.
 
 ## Testing
 
-The backend has an API test suite built with Jest and Supertest. It covers login and JWT issuing, the uniform 401 for bad credentials, protected routes with and without a token, and users not being able to delete each other's accounts.
+The backend has an API test suite built with Jest and Supertest. It covers login and JWT issuing, the uniform 401 for bad credentials, protected routes with and without a token, users not being able to delete each other's accounts, rate limiting, request validation, protected fields on updates, security headers, CORS, and the demo seed script.
 
 ```bash
 cd service
@@ -167,6 +217,8 @@ The tests run against an in-memory MongoDB ([mongodb-memory-server](https://gith
 ## API overview
 
 Base URL: `http://localhost:3002`. Protected endpoints expect `Authorization: Bearer <token>`, using the token returned by `POST /user/login`.
+
+Request bodies are validated: invalid data returns `400` with a `message` and a per-field `errors` list, and fields a route doesn't accept are ignored. `POST /user/login` allows 10 failed attempts and `POST /user` 10 signups per 15 minutes per IP; after that the API returns `429`.
 
 | Area | Endpoints | Access |
 | --- | --- | --- |
